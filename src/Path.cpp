@@ -26,7 +26,7 @@ Path::Path(const char* str)
 
 void Path::init(const String& executable_path)
 {
-	if (app_path.parent != "")
+	if (app_path.parent == "")
 	{
 		app_path.setup_from_string(executable_path);
 	}

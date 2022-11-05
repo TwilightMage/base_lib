@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="Compound::Value">
+        <DisplayString Condition="type == 0">Null</DisplayString>
+        <DisplayString Condition="type == 1">{{String}} {*(String*)data}</DisplayString>
+        <DisplayString Condition="type == 2">{{char}} {*(char*)data}</DisplayString>
+        <DisplayString Condition="type == 3">{{short}} {*(short*)data}</DisplayString>
+        <DisplayString Condition="type == 4">{{int32}} {*(int32*)data}</DisplayString>
+        <DisplayString Condition="type == 5">{{int64}} {*(int64*)data}</DisplayString>
+        <DisplayString Condition="type == 6">{{bool}} {*(bool*)data}</DisplayString>
+        <DisplayString Condition="type == 7">{{float}} {*(float*)data}</DisplayString>
+        <DisplayString Condition="type == 8">{{double}} {*(double*)data}</DisplayString>
+        <DisplayString Condition="type == 9">{{Array}} {*(Compound::Array*)data}</DisplayString>
+        <DisplayString Condition="type == 10">{{Object}} {*(Compound::Object*)data}</DisplayString>
+        <DisplayString Condition="type == 11">{{Binary}} {binary_type_size} bytes</DisplayString>
+        <Expand>
+            <ExpandedItem Condition="type == 1">*(String*)data</ExpandedItem>
+            <ExpandedItem Condition="type == 9">*(Compound::Array*)data</ExpandedItem>
+            <ExpandedItem Condition="type == 10">*(Compound::Object*)data</ExpandedItem>
+        </Expand>
+    </Type>
+    
+    <Type Name="String">
+        <DisplayString Condition="length_ > 0">{inner_,na}</DisplayString>
+        <DisplayString Condition="length_ == 0">empty</DisplayString>
+        <Expand>
+            <Item Name="[allocated length]" ExcludeView="simple">allocated_length_</Item>
+            <ArrayItems>
+                <Size>length_</Size>
+                <ValuePointer>inner_</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <Type Name="Name">
+        <DisplayString Condition="size_ > 0">{data_,na}#{hash_}</DisplayString>
+        <DisplayString Condition="size_ == 0">empty</DisplayString>
+        <StringView Condition="length_ > 0">inner</StringView>
+        <Expand>
+            <Item Name="[size]" ExcludeView="simple">size_</Item>
+            <Item Name="[hash]" ExcludeView="simple">hash_</Item>
+            <ArrayItems>
+                <Size>size_</Size>
+                <ValuePointer>data_</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <Type Name="Array&lt;*&gt;">
+        <DisplayString Condition="length_ > 0">{{ length={length_} }}</DisplayString>
+        <DisplayString Condition="length_ == 0">{{ empty }}</DisplayString>
+        <Expand>
+            <Item Name="[allocated length]" ExcludeView="simple">allocated_length_</Item>
+            <ArrayItems>
+                <Size>length_</Size>
+                <ValuePointer>inner_</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <Type Name="List&lt;*&gt;">
+        <DisplayString Condition="length_ > 0">{{ length={length_} }}</DisplayString>
+        <DisplayString Condition="length_ == 0">{{ empty }}</DisplayString>
+        <Expand>
+            <Item Name="[allocated length]" ExcludeView="simple">allocated_length_</Item>
+            <ArrayItems>
+                <Size>length_</Size>
+                <ValuePointer>inner_</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <Type Name="Set&lt;*&gt;">
+        <DisplayString Condition="length_ > 0">{{ length={length_} }}</DisplayString>
+        <DisplayString Condition="length_ == 0">{{ empty }}</DisplayString>
+        <Expand>
+            <Item Name="[allocated length]" ExcludeView="simple">allocated_length_</Item>
+            <ArrayItems>
+                <Size>length_</Size>
+                <ValuePointer>inner_</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <Type Name="Array2D&lt;*&gt;">
+        <DisplayString>{{ size = {size_x_} x {size_y_} }}</DisplayString>
+        <Expand>
+            <ArrayItems>
+                <Direction>Backward</Direction>
+                <Rank>2</Rank>
+                <Size>$i==0?size_x_:size_y_</Size>
+                <ValuePointer>data_</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+    
+    <Type Name="Tree1D&lt;*&gt;">
+        <DisplayString>{{ size = {size_} }}</DisplayString>
+        <Expand>
+            <Item Name="[size]">size_</Item>
+            <TreeItems>
+                <Size>size_</Size>
+                <HeadPointer>root_</HeadPointer>
+                <LeftPointer>left</LeftPointer>
+                <RightPointer>right</RightPointer>
+                <ValueNode Condition="this != nullptr">point</ValueNode>
+            </TreeItems>
+        </Expand>
+    </Type>
+
+    <Type Name="Tree1D&lt;*&gt;::Point">
+        <DisplayString>{x} = {value}</DisplayString>
+    </Type>
+
+    <Type Name="Pair&lt;*&gt;">
+        <DisplayString>{key} = {value}</DisplayString>
+    </Type>
+
+    <Type Name="Map&lt;*&gt;">
+        <DisplayString>{{ size = {data_.size_} }}</DisplayString>
+        <Expand>
+            <Item Name="[size]">data_.size_</Item>
+            <TreeItems>
+                <Size>data_.size_</Size>
+                <HeadPointer>data_.root_</HeadPointer>
+                <LeftPointer>left</LeftPointer>
+                <RightPointer>right</RightPointer>
+                <ValueNode Condition="this != nullptr">point</ValueNode>
+            </TreeItems>
+        </Expand>
+    </Type>
+
+    <Type Name="SimpleMap&lt;*&gt;">
+        <DisplayString>{{ size = {entries.length_} }}</DisplayString>
+        <Expand>
+            <Item Name="[size]">entries.length_</Item>
+            <ExpandedItem>entries</ExpandedItem>
+        </Expand>
+    </Type>
+    
+    <Type Name="std::shared_ptr&lt;*&gt;">
+        <DisplayString Condition="_Ptr != nullptr">Shared {{ {_Ptr} }}</DisplayString>
+        <DisplayString>Shared {{ nullptr }}</DisplayString>
+        <Expand>
+            <Item Name="[reference count]">_Rep-&gt;_Uses</Item>
+            <Item Name="[weak reference count]">_Rep-&gt;_Weaks</Item>
+            <ExpandedItem Condition="_Ptr != nullptr">*_Ptr</ExpandedItem>
+        </Expand>
+    </Type>
+
+    <Type Name="std::unique_ptr&lt;*&gt;">
+        <DisplayString Condition="_Ptr != nullptr">Unique {{ {_Ptr} }}</DisplayString>
+        <DisplayString>Unique {{ nullptr }}</DisplayString>
+        <Expand>
+            <Item Name="[reference count]">_Rep-&gt;_Uses</Item>
+            <Item Name="[weak reference count]">_Rep-&gt;_Weaks</Item>
+            <ExpandedItem Condition="_Ptr != nullptr">*_Ptr</ExpandedItem>
+        </Expand>
+    </Type>
+
+    <Type Name="std::weak_ptr&lt;*&gt;">
+        <DisplayString Condition="_Ptr != nullptr">Weak {{ {_Ptr} }}</DisplayString>
+        <DisplayString>Weak {{ nullptr }}</DisplayString>
+        <Expand>
+            <Item Name="[reference count]">_Rep-&gt;_Uses</Item>
+            <Item Name="[weak reference count]">_Rep-&gt;_Weaks</Item>
+            <ExpandedItem Condition="_Ptr != nullptr">*_Ptr</ExpandedItem>
+        </Expand>
+    </Type>
+
+    <Type Name="DateTime::Interval">
+        <DisplayString>{{ {day}d, {hour}h, {minute}m, {second}s, {millisecond}ms }}</DisplayString>
+    </Type>
+    
+    <Type Name="Vector3">
+        <DisplayString>Vector3 {{ x={x}, y={y}, z={z} }}</DisplayString>
+    </Type>
+
+    <Type Name="Vector2">
+        <DisplayString>Vector2 {{ x={x}, y={y}} }}</DisplayString>
+    </Type>
+
+    <Type Name="Quaternion">
+        <DisplayString>Quaternion {{ x={x}, y={y}, z={z}, w={w} }}</DisplayString>
+    </Type>
+
+    <Type Name="Rect">
+        <DisplayString>Vector3 {{ x={x}, y={y}, w={w}, h={h} }}</DisplayString>
+    </Type>
+
+    <Type Name="Mesh::vertex">
+        <DisplayString>Vertex {{ pos={pos}, uv={uv}, col={col} }}</DisplayString>
+    </Type>
+
+    <Type Name="glm::vec&lt;3,float,0&gt;">
+        <DisplayString>vec3 {{ {x}, {y}, {z} }}</DisplayString>
+    </Type>
+
+    <Type Name="glm::vec&lt;4,float,0&gt;">
+        <DisplayString>vec4 {{ {x}, {y}, {z}, {w} }}</DisplayString>
+    </Type>
+
+    <Type Name="glm::mat&lt;4,4,float,0&gt;">
+        <DisplayString>mat4 {{ expand to view }}</DisplayString>
+        <Expand>
+            <Item Name="[0]" ExcludeView="simple">value[0]</Item>
+            <Item Name="[1]" ExcludeView="simple">value[1]</Item>
+            <Item Name="[2]" ExcludeView="simple">value[2]</Item>
+            <Item Name="[3]" ExcludeView="simple">value[3]</Item>
+        </Expand>
+    </Type>
+
+    <Type Name="Matrix4x4::Row">
+        <DisplayString>{{ {x}, {y}, {z}, {w} }}</DisplayString>
+    </Type>
+    <Type Name="Matrix4x4">
+        <DisplayString>mat4 {{ expand to view }}</DisplayString>
+        <Expand>
+            <Item Name="[0]" ExcludeView="simple">data[0]</Item>
+            <Item Name="[1]" ExcludeView="simple">data[1]</Item>
+            <Item Name="[2]" ExcludeView="simple">data[2]</Item>
+            <Item Name="[3]" ExcludeView="simple">data[3]</Item>
+        </Expand>
+    </Type>
+</AutoVisualizer>
