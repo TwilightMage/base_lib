@@ -32,7 +32,7 @@ void Path::init(const String& executable_path)
 	}
 	else
 	{
-		
+		print_warning("Path", "Attempt to set app path after it has been set: %s", executable_path.c());
 	}
 }
 
@@ -46,9 +46,17 @@ bool Path::is_global() const
 	return is_global_;
 }
 
-void Path::create() const
+void Path::create_dir() const
 {
 	std::filesystem::create_directories(get_absolute_string().c());
+}
+
+void Path::create_file() const
+{
+	std::filesystem::create_directories(up().get_absolute_string().c());
+
+	std::ofstream of(get_absolute_string().c());
+	of.close();
 }
 
 Path Path::up(uint levels) const
@@ -128,9 +136,13 @@ String Path::to_string() const
 	{
 		return filename + extension;
 	}
+	else if (extension.is_empty())
+	{
+		return parent + '/' + filename;
+	}
 	else
 	{
-		return parent + '/' + filename + extension;
+		return parent + '/' + filename + '.' + extension;
 	}
 }
 
@@ -169,7 +181,7 @@ void Path::setup_from_string(const String& string)
 {
 	if (!string.is_empty())
 	{
-		std::filesystem::path path(sanitize(string).c());
+		const std::filesystem::path path(sanitize(string).c());
 
 		parent = path.parent_path().string();
 		filename = path.stem().string();

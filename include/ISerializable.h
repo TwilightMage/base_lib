@@ -12,7 +12,7 @@ public:
 };
 
 template<typename T>
-concept ImplicitlySerializable = requires(const T a1, T a2, std::ostream os, std::istream is)
+concept ImplicitlySerializable = requires(const T a1, T a2, std::ostream& os, std::istream& is)
 {
     a1.write_to_stream(os);
     a2.read_from_stream(is);

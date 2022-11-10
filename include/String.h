@@ -153,6 +153,9 @@ public:
 	bool operator>(const String& rhs) const;
 	bool operator>=(const String& rhs) const;
 
+	String operator+(char ch) const;
+	void operator+=(char ch);
+
 	char& operator[](uint index);
 	const char& operator[](uint index) const;
 

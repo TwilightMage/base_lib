@@ -2,6 +2,8 @@
 
 #include <deque>
 
+#include "../include/Math.h"
+
 /*Map<int, SaveGame::Parser> parsers = {
     {1, {
         [](std::ifstream& file) -> std::shared_ptr<SaveGame::Metadata>
@@ -365,12 +367,115 @@ Compound::Array Compound::Converters::JSON::read_array() const
     return array;
 }
 
-/*Compound::ArrayDiff Compound::Array::build_duff_relative_to(const Array& rhs) const
+Compound::Array::Array()
+    : List<Value>()
 {
-    ArrayDiff diff;
+}
 
+Compound::Array::Array(const Array& rhs)
+    : List<Value>(rhs)
+{
+}
+
+Compound::Array::Array(const List<Value>& rhs)
+    : List<Value>(rhs)
+{
+}
+
+Compound::Array::Array(const std::initializer_list<Value>& rhs)
+    : List<Value>(rhs)
+{
+}
+
+Compound::Array& Compound::Array::operator=(const Array& rhs)
+{
+    if (this == &rhs) return *this;
+
+    List<Value>::operator=(rhs);
+
+    return *this;
+}
+
+Compound::Array& Compound::Array::operator=(const List<Value>& rhs)
+{
+    List<Value>::operator=(rhs);
+
+    return *this;
+}
+
+bool Compound::Array::operator==(const Array& rhs) const
+{
+    if (this == &rhs) return true;
+    
+    return List<Value>::operator==(rhs);
+}
+
+bool Compound::Array::operator==(const List<Value>& rhs) const
+{
+    return List<Value>::operator==(rhs);
+}
+
+Shared<Compound::ArrayDiff> Compound::Array::build_diff_against(const Array& base) const
+{
+    auto diff = MakeShared<ArrayDiff>();
+
+    diff->newLength = base.length();
+
+    for (uint i = 0; i < Math::min(length(), base.length()); i++)
+    {
+        if (at(i).get_type() == Type::Array && base.at(i).get_type() == Type::Array)
+        {
+            const auto val_diff = ((Array)at(i)).build_diff_against((Array)base.at(i));
+            if (!val_diff->is_empty())
+            {
+                diff->merge[i] = val_diff;
+            }
+        }
+        else if (at(i).get_type() == Type::Array && base.at(i).get_type() == Type::Array)
+        {
+            const auto val_diff = ((Object)at(i)).build_diff_against((Object)base.at(i));
+            if (!val_diff->is_empty())
+            {
+                diff->merge[i] = val_diff;
+            }
+        }
+        else
+        {
+            diff->set[i] = base.at(i);
+        }
+    }
+
+    for (uint i = 0; i < base.length(); i++)
+    {
+        diff->set[i] = base.at(i);
+    }
+    
     return diff;
-}*/
+}
+
+void Compound::Array::apply_diff(const Shared<ArrayDiff>& diff)
+{
+    resize(diff->newLength);
+
+    for (const auto& setted : diff->set)
+    {
+        at(setted->key) = setted->value;
+    }
+
+    for (const auto& merged : diff->merge)
+    {
+        auto& val = at(merged->key);
+        val.set_type(merged->value->get_target_type());
+        if (merged->value->get_target_type() == Type::Array)
+        {
+            ((Array)val).apply_diff(cast<ArrayDiff>(merged->value));
+        }
+        else if (merged->value->get_target_type() == Type::Object)
+        {
+            ((Object)val).apply_diff(cast<ObjectDiff>(merged->value));
+        }
+    }
+}
 
 Compound::Object::Object()
     : SimpleMap<String, Value>()
@@ -450,61 +555,76 @@ bool Compound::Object::contains_number(const String& key) const
     return false;
 }
 
-Compound::ObjectDiff Compound::Object::build_diff_against(const Object& base) const
+Shared<Compound::ObjectDiff> Compound::Object::build_diff_against(const Object& base) const
 {
-    ObjectDiff diff;
+    auto diff = MakeShared<ObjectDiff>();
     
     for (const auto& base_entry : base.entries)
     {
         if (!contains(base_entry->key))
         {
-            diff.removed.add(base_entry->key);
+            diff->remove.add(base_entry->key);
         }
     }
 
     for (const auto& my_entry : entries)
     {
-        if (auto base_entry = base.find(my_entry->key))
+        if (const auto base_entry = base.find(my_entry->key))
         {
             if (base_entry->get_type() == Type::Object && my_entry->value.get_type() == Type::Object)
             {
-                const auto prop_diff = ((Object)my_entry->value).build_diff_against((Object)*base_entry);
-                if (!prop_diff.is_empty())
+                const auto val_diff = ((Array)my_entry->value).build_diff_against((Array)*base_entry);
+                if (!val_diff->is_empty())
                 {
-                    diff.merged[my_entry->key] = prop_diff;
+                    diff->merge[my_entry->key] = val_diff;
+                }
+            }
+            else if (base_entry->get_type() == Type::Object && my_entry->value.get_type() == Type::Object)
+            {
+                const auto val_diff = ((Object)my_entry->value).build_diff_against((Object)*base_entry);
+                if (!val_diff->is_empty())
+                {
+                    diff->merge[my_entry->key] = val_diff;
                 }
             }
             else if (*base_entry != my_entry->value)
             {
-                diff.added[my_entry->key] = my_entry->value;
+                diff->set[my_entry->key] = my_entry->value;
             }
         }
         else
         {
-            diff.added[my_entry->key] = my_entry->value;
+            diff->set[my_entry->key] = my_entry->value;
         }
     }
 
     return diff;
 }
 
-void Compound::Object::apply_diff(const ObjectDiff& diff)
+void Compound::Object::apply_diff(const Shared<ObjectDiff>& diff)
 {
-    for (const auto& removed : diff.removed)
+    for (const auto& removed : diff->remove)
     {
         remove(removed);
     }
 
-    for (const auto& added : diff.added)
+    for (const auto& seted : diff->set)
     {
-        operator[](added->key) = added->value;
+        operator[](seted->key) = seted->value;
     }
 
-    for (const auto& merged : diff.merged)
+    for (const auto& merged : diff->merge)
     {
-        auto& val = operator[](merged->key);
-        val.set_type(Type::Object);
-        ((Object)val).apply_diff(merged->value);
+        auto& val = at(merged->key);
+        val.set_type(merged->value->get_target_type());
+        if (merged->value->get_target_type() == Type::Array)
+        {
+            ((Array)val).apply_diff(cast<ArrayDiff>(merged->value));
+        }
+        else if (merged->value->get_target_type() == Type::Object)
+        {
+            ((Object)val).apply_diff(cast<ObjectDiff>(merged->value));
+        }
     }
 }
 

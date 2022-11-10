@@ -9,7 +9,7 @@ LogStream::LogStream(const DateTime& log_start_time, const String& root)
 {
 	auto logs = Path(root).up().get_child("logs");
 
-	logs.create();
+	logs.create_dir();
 	timed_log_file_ = std::ofstream(logs.get_child(log_start_time.to_string("%Y_%m_%d_%H_%M_%S") + ".log").to_string().c());
 	latest_log_file_ = std::ofstream(logs.get_child("latest.log").to_string().c());
 

@@ -651,7 +651,7 @@ void String::operator+=(const String& rhs)
 	{
 		delete[] inner_;
 		inner_ = target;
-		allocated_length_ = length_;
+		allocated_length_ = length_ + 1;
 	}
 }
 
@@ -714,6 +714,40 @@ bool String::operator>=(const String& rhs) const
 	}
 
 	return length_ >= rhs.length_;
+}
+
+String String::operator+(char ch) const
+{
+	String result = String(' ', length_ + 1);
+
+	memcpy(result.inner_, inner_, length_);
+	result.inner_[length_ - 1] = ch;
+
+	return result;
+}
+
+void String::operator+=(char ch)
+{
+	const bool extend = length_ + 1 + 1 > allocated_length_;
+
+	char* target = inner_;
+	if (extend)
+	{
+		target = new char[length_ + 1 + 1];
+		memcpy(target, inner_, length_);
+	}
+
+	target[length_] = ch;
+	target[length_ + 1] = '\0';
+
+	length_++;
+
+	if (extend)
+	{
+		delete[] inner_;
+		inner_ = target;
+		allocated_length_ = length_ + 1;
+	}
 }
 
 char& String::operator[](uint index)

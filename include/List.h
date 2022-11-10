@@ -9,6 +9,12 @@
 #include "IConvertible.h"
 #include "StreamUtils.h"
 
+template<typename T>
+concept CanLess = requires(const T a, const T b)
+{
+    a < b;
+};
+
 template<typename ValueType>
 class List : public Array<ValueType>
 {
@@ -469,14 +475,19 @@ public:
         return operator[](0);
     }
 
-    FORCEINLINE ValueType& first_or_default()
+    FORCEINLINE ValueType first_or_default()
     {
         return length_ > 0 ? operator[](0) : ValueType();
     }
 
-    FORCEINLINE const ValueType& first_or_default() const
+    FORCEINLINE ValueType& first_or_default(ValueType& defaultValue)
     {
-        return length_ > 0 ? operator[](0) : ValueType();
+        return length_ > 0 ? operator[](0) : defaultValue;
+    }
+
+    FORCEINLINE const ValueType& first_or_default(const ValueType& defaultValue) const
+    {
+        return length_ > 0 ? operator[](0) : defaultValue;
     }
     
     FORCEINLINE ValueType& last()
@@ -489,14 +500,19 @@ public:
         return operator[](length_ - 1);
     }
 
-    FORCEINLINE ValueType& last_or_default()
+    FORCEINLINE ValueType last_or_default()
     {
         return length_ > 0 ? operator[](length_ - 1) : ValueType();
     }
 
-    FORCEINLINE const ValueType& last_or_default() const
+    FORCEINLINE ValueType& last_or_default(ValueType& defaultValue)
     {
-        return length_ > 0 ? operator[](length_ - 1) : ValueType();
+        return length_ > 0 ? operator[](length_ - 1) : defaultValue;
+    }
+
+    FORCEINLINE const ValueType& last_or_default(const ValueType& defaultValue) const
+    {
+        return length_ > 0 ? operator[](length_ - 1) : defaultValue;
     }
 
     bool all(std::function<bool(const ValueType& item)> predicate) const
@@ -635,35 +651,49 @@ public:
         length_ = 0;
     }
 
-    void sort()
+    void sort() requires CanLess<ValueType>
     {
-        if (inner_ == nullptr) return;
-        
-        for (uint i = 0; i < length_ - 1; i++)
+        if constexpr (CanLess<ValueType>)
         {
-            for (uint j = i + 1; j < length_; j++)
+            if (inner_ == nullptr) return;
+        
+            for (uint i = 0; i < length_ - 1; i++)
             {
-                if (inner_[i] < inner_[j])
+                for (uint j = i + 1; j < length_; j++)
                 {
-                    std::swap(inner_[i], inner_[j]);
+                    if (inner_[i] < inner_[j])
+                    {
+                        std::swap(inner_[i], inner_[j]);
+                    }
                 }
             }
         }
+        else
+        {
+            // TODO: C++ must somehow handle this smarter
+        }
     }
 
-    void sort_reverse()
+    void sort_reverse() requires CanLess<ValueType>
     {
-        if (inner_ == nullptr) return;
-        
-        for (uint i = 0; i < length_ - 1; i++)
+        if constexpr (CanLess<ValueType>)
         {
-            for (uint j = i + 1; j < length_; j++)
+            if (inner_ == nullptr) return;
+        
+            for (uint i = 0; i < length_ - 1; i++)
             {
-                if (inner_[i] > inner_[j])
+                for (uint j = i + 1; j < length_; j++)
                 {
-                    std::swap(inner_[i], inner_[j]);
+                    if (inner_[j] < inner_[i])
+                    {
+                        std::swap(inner_[i], inner_[j]);
+                    }
                 }
             }
+        }
+        else
+        {
+            // TODO: C++ must somehow handle this smarter
         }
     }
 

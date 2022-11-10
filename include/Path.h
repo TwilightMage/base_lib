@@ -32,7 +32,8 @@ public:
 
     bool exists() const;
 	bool is_global() const;
-	void create() const;
+	void create_dir() const;
+	void create_file() const;
 	Path up(uint levels = 1) const;
 	Path get_child(const String& child) const;
 	Path get_absolute() const;

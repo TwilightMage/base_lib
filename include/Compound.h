@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "Pointers.h"
 #include "../include/IConvertible.h"
 #include "../include/List.h"
 #include "../include/SimpleMap.h"
@@ -9,8 +10,7 @@
 namespace Compound
 {    
     class EXPORT Value;
-    typedef List<Value> Array;
-    //class EXPORT Array;
+    class EXPORT Array;
     class EXPORT Object;
 
     enum class Type : int
@@ -78,27 +78,52 @@ namespace Compound
         const uint64 actual_binary_size;
     };
 
-    /*struct ArrayDiff
-    {
-        List<uint> removed;
-        List<Value> added;
-        SimpleMap<uint, Value> changed;
-    };*/
-
-    struct ObjectDiff
-    {
-        FORCEINLINE bool is_empty() const { return removed.length() == 0 && added.size() == 0 && merged.size() == 0; }
-        
-        List<String> removed;
-        SimpleMap<String, Value> added;
-        SimpleMap<String, ObjectDiff> merged;
-    };
-
-    /*class EXPORT Array : public List<Value>
+    class EXPORT IDiff
     {
     public:
-        //ArrayDiff build_duff_relative_to(const Array& rhs) const;
-    };*/
+        virtual bool is_empty() const = 0;
+        virtual Type get_target_type() const = 0;
+    };
+
+    class ArrayDiff : public IDiff
+    {
+    public:
+        FORCEINLINE bool is_empty() const override { return set.size() == 0 && merge.size() == 0; }
+        FORCEINLINE Type get_target_type() const override { return Type::Array; }
+        
+        uint newLength;
+        SimpleMap<uint, Value> set;
+        SimpleMap<uint, Shared<IDiff>> merge;
+    };
+
+    class ObjectDiff : public IDiff
+    {
+    public:
+        FORCEINLINE bool is_empty() const override { return remove.length() == 0 && set.size() == 0 && merge.size() == 0; }
+        FORCEINLINE Type get_target_type() const override { return Type::Object; }
+        
+        List<String> remove;
+        SimpleMap<String, Value> set;
+        SimpleMap<String, Shared<IDiff>> merge;
+    };
+
+    class EXPORT Array : public List<Value>
+    {
+    public:
+        Array();
+        Array(const Array& rhs);
+        Array(const List<Value>& rhs);
+        Array(const std::initializer_list<Value>& rhs);
+
+        Array& operator=(const Array& rhs);
+        Array& operator=(const List<Value>& rhs);
+
+        bool operator==(const Array& rhs) const;
+        bool operator==(const List<Value>& rhs) const;
+        
+        Shared<ArrayDiff> build_diff_against(const Array& base) const;
+        void apply_diff(const Shared<ArrayDiff>& diff);
+    };
 
     class EXPORT Object : public SimpleMap<String, Value>
     {
@@ -118,8 +143,8 @@ namespace Compound
         bool contains_non_null(const String& key) const;
         bool contains_number(const String& key) const;
 
-        ObjectDiff build_diff_against(const Object& base) const;
-        void apply_diff(const ObjectDiff& diff);
+        Shared<ObjectDiff> build_diff_against(const Object& base) const;
+        void apply_diff(const Shared<ObjectDiff>& diff);
 
 #pragma region String
         String get_string(const String& key, const String& default_value = "") const;
