@@ -9,10 +9,10 @@
 #include "IConvertible.h"
 #include "StreamUtils.h"
 
-template<typename T>
-concept CanLess = requires(const T a, const T b)
+template<class L, class R=L>
+concept CanLess = requires(const L& lhs, const R& rhs)
 {
-    a < b;
+    {lhs < rhs} -> std::same_as<bool>;
 };
 
 template<typename ValueType>
@@ -698,7 +698,7 @@ public:
     }
 
     template<class Predicate>
-    void sort()
+    void sort_predicate()
     {
         if (inner_ == nullptr) return;
         
@@ -714,7 +714,7 @@ public:
         }
     }
 
-    void sort(const std::function<bool(ValueType a, ValueType b)> predicate)
+    void sort_predicate(const std::function<bool(ValueType a, ValueType b)> predicate)
     {
         if (inner_ == nullptr) return;
         
