@@ -14,10 +14,12 @@ public:
     Color(const Color& rhs);
     Color(byte r, byte g, byte b);
     Color(byte r, byte g, byte b, byte a);
+    explicit Color(int32 number);
 
     FORCEINLINE Vector3 to_vector3() const;
     FORCEINLINE Quaternion to_quaternion() const;
     String to_string() const;
+    int to_number() const;
 
     void convert_to(Compound::Object& to) const;
     void convert_from(const Compound::Object& from);

@@ -1,11 +1,11 @@
 ﻿#pragma once
 
 #include "Pointers.h"
-#include "../include/IConvertible.h"
-#include "../include/List.h"
-#include "../include/SimpleMap.h"
-#include "../include/String.h"
-#include "../include/TextReader.h"
+#include "IConvertible.h"
+#include "List.h"
+#include "SimpleMap.h"
+#include "String.h"
+#include "TextReader.h"
 
 namespace Compound
 {    
