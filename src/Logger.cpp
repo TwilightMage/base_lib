@@ -1,8 +1,10 @@
 ﻿#include "../include/Logger.h"
 
+#include "../include/Path.h"
+
 Logger* Logger::instance_ = nullptr;
 
-void Logger::init(const String& root_path)
+void Logger::init(const Path& root_path)
 {
     if (instance_) return;
 
@@ -19,7 +21,7 @@ void Logger::new_log_record(ELogLevel level, const String& category, const Strin
     instance_->log_stream_mutex_.unlock();
 }
 
-Logger::Logger(const String& root_path)
+Logger::Logger(const Path& root_path)
     : log_stream_(DateTime::now(), root_path)
 {
     

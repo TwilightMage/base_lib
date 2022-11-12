@@ -5,6 +5,8 @@
 #include "LogStream.h"
 #include "String.h"
 
+class Path;
+
 enum class ELogLevel
 {
     Verbose,
@@ -16,12 +18,12 @@ enum class ELogLevel
 class EXPORT Logger
 {
 public:
-    static void init(const String& root_path);
+    static void init(const Path& root_path);
     
     static void new_log_record(ELogLevel level, const String& category, const String& message);
 
 private:
-    Logger(const String& root_path);
+    Logger(const Path& root_path);
     
     LogStream log_stream_;
     std::mutex log_stream_mutex_;

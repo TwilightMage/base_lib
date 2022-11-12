@@ -24,15 +24,15 @@ Path::Path(const char* str)
 {
 }
 
-void Path::init(const String& executable_path)
+void Path::init(const String& executablePath)
 {
 	if (app_path.parent == "")
 	{
-		app_path.setup_from_string(executable_path);
+		app_path.setup_from_string(executablePath);
 	}
 	else
 	{
-		print_warning("Path", "Attempt to set app path after it has been set: %s", executable_path.c());
+		print_warning("Path", "Attempt to set app path after it has been set: %s", executablePath.c());
 	}
 }
 

@@ -4,10 +4,10 @@
 
 #include "../include/Path.h"
 
-LogStream::LogStream(const DateTime& log_start_time, const String& root)
+LogStream::LogStream(const DateTime& log_start_time, const Path& root)
 	: std::ostream(&tbuf_)
 {
-	auto logs = Path(root).up().get_child("logs");
+	auto logs = root.up().get_child("logs");
 
 	logs.create_dir();
 	timed_log_file_ = std::ofstream(logs.get_child(log_start_time.to_string("%Y_%m_%d_%H_%M_%S") + ".log").to_string().c());

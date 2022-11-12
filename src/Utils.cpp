@@ -4,11 +4,18 @@
 #include <algorithm>
 
 #include "../include/Logger.h"
+#include "../include/Path.h"
 
 #if PLATFORM_WINDOWS
 #include <dbghelp.h>
 #include <psapi.h>
 #endif
+
+void Utils::init_base_lib(const String& executablePath)
+{
+    Path::init(executablePath);
+    Logger::init(Path::get_app_path());
+}
 
 List<String> Utils::get_callstack(uint offset)
 {
@@ -130,7 +137,7 @@ void Utils::print_callstack(String category, uint offset)
 bool Utils::ask_yes_no(const String& message)
 {
 #if PLATFORM_WINDOWS
-    return MessageBox(NULL, message.c(), "Decide", MB_YESNO) == IDYES;
+    return MessageBox(NULL, message.wc(), L"Decide", MB_YESNO) == IDYES;
 #else
     return false;
 #endif

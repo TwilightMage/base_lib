@@ -6,7 +6,9 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb/stb_image_write.h>
 
-List<Color> stb::load(const Path& path, uint& out_width, uint& out_height)
+#include "../include/Map.h"
+
+Array2D<Color> stb::load(const Path& path, uint& out_width, uint& out_height)
 {
     int w;
     int h;
@@ -18,17 +20,17 @@ List<Color> stb::load(const Path& path, uint& out_width, uint& out_height)
     
     if (pixels && w * h > 0)
     {
-        List<Color> result(w * h);
-        memcpy(result.get_data(), pixels, sizeof(Color) * result.length());
+        Array2D<Color> result(w, h, Color::white());
+        memcpy(result.begin(), pixels, sizeof(Color) * 2 * h);
         stbi_image_free(pixels);
         return result;
     }
 
     stbi_image_free(pixels);
-    return List<Color>();
+    return Array2D<Color>();
 }
 
-void stb::write_bmp(const Path& path, uint w, uint h, const List<Color>& colors)
+void stb::save_bmp(const Path& path, uint w, uint h, const Array2D<Color>& colors)
 {
-    stbi_write_bmp(path.get_absolute_string().c(), w, h, 4, colors.get_data());
+    stbi_write_bmp(path.get_absolute_string().c(), w, h, 4, colors.begin());
 }

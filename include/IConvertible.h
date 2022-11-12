@@ -26,7 +26,7 @@ template<typename FromType, typename ToType>
 concept Convertible = std::derived_from<FromType, IConvertible<ToType>> || ImplicitlyConvertible<FromType, ToType> || std::derived_from<ToType, IConvertible<FromType>> || std::same_as<FromType, ToType> || std::assignable_from<ToType, FromType> || std::constructible_from<ToType, FromType> || ExplicitConversionOperator<FromType, ToType>;
 
 template<typename FromType, typename ToType>
-void convert(const FromType& from, ToType& to)
+void convert(const FromType& from, ToType& to) requires Convertible<FromType, ToType>
 {
     if ((void*)&from == (void*)&to) return;
     

@@ -9,12 +9,6 @@
 #include "IConvertible.h"
 #include "StreamUtils.h"
 
-template<class L, class R=L>
-concept CanLess = requires(const L& lhs, const R& rhs)
-{
-    {lhs < rhs} -> std::same_as<bool>;
-};
-
 template<typename ValueType>
 class List : public Array<ValueType>
 {
@@ -651,9 +645,9 @@ public:
         length_ = 0;
     }
 
-    void sort() requires CanLess<ValueType>
+    void sort() requires CanCheckLess<ValueType>
     {
-        if constexpr (CanLess<ValueType>)
+        if constexpr (CanCheckLess<ValueType>)
         {
             if (inner_ == nullptr) return;
         
@@ -661,7 +655,7 @@ public:
             {
                 for (uint j = i + 1; j < length_; j++)
                 {
-                    if (inner_[i] < inner_[j])
+                    if (check_less(inner_[i], inner_[j]))
                     {
                         std::swap(inner_[i], inner_[j]);
                     }
@@ -674,9 +668,9 @@ public:
         }
     }
 
-    void sort_reverse() requires CanLess<ValueType>
+    void sort_reverse() requires CanCheckLess<ValueType>
     {
-        if constexpr (CanLess<ValueType>)
+        if constexpr (CanCheckLess<ValueType>)
         {
             if (inner_ == nullptr) return;
         
@@ -684,7 +678,7 @@ public:
             {
                 for (uint j = i + 1; j < length_; j++)
                 {
-                    if (inner_[j] < inner_[i])
+                    if (check_less(inner_[j], inner_[i]))
                     {
                         std::swap(inner_[i], inner_[j]);
                     }

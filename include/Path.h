@@ -27,7 +27,7 @@ public:
 	Path(const String& path_str);
 	Path(const char* str);
 
-	static void init(const String& executable_path);
+	static void init(const String& executablePath);
 	FORCEINLINE static const Path& get_app_path() { return app_path; }
 
     bool exists() const;

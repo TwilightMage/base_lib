@@ -54,3 +54,5 @@ public:
     float z;
     float w;
 };
+
+typedef Quaternion Vector4;

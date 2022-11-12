@@ -32,14 +32,6 @@ Color::Color(byte r, byte g, byte b, byte a)
 {
 }
 
-Color::Color(int32 number)
-    : r((number & 0b11111111000000000000000000000000) >> 24)
-    , g((number & 0b00000000111111110000000000000000) >> 16)
-    , b((number & 0b00000000000000001111111100000000) >> 8 )
-    , a((number & 0b00000000000000000000000011111111)      )
-{
-}
-
 Vector3 Color::to_vector3() const
 {
     return Vector3(r / 255.0f, g / 255.0f, b / 255.0f);
@@ -53,11 +45,6 @@ Quaternion Color::to_quaternion() const
 String Color::to_string() const
 {
     return String::format("{ r=%i, g=%i, b=%i, a=%i }", r, g, b, a);
-}
-
-int Color::to_number() const
-{
-    return (int)r << 24 | (int)g << 16 | (int)b << 8 | (int)a;
 }
 
 void Color::convert_to(Compound::Object& to) const
