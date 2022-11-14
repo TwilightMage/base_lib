@@ -16,7 +16,7 @@ Process::Process(const Path& path, const List<String>& args)
     dataBlock->path = path;
     dataBlock->args = args;
 
-    const String command = path.get_absolute_string() + String::join(args, "");
+    String command = path.get_absolute_string() + String::join(args, "");
 
     SECURITY_ATTRIBUTES saAttr;
     saAttr.nLength = sizeof(SECURITY_ATTRIBUTES); 
@@ -73,8 +73,8 @@ Process::Process(const Path& path, const List<String>& args)
     siStartInfo.hStdInput = inputPipe_R;
     siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
 
-    bool success = CreateProcess(NULL, 
-      command.wc(),             // command line
+    bool success = CreateProcess(NULL,
+      command.begin(),          // command line
       NULL,                     // process security attributes
       NULL,                     // primary thread security attributes
       TRUE,                     // handles are inherited

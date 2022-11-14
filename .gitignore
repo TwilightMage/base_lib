@@ -8,3 +8,4 @@ riderModule.iml
 build/
 intermediate/
 *.user
+cmake-*/

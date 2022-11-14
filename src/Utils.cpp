@@ -39,19 +39,20 @@ List<String> Utils::get_callstack(uint offset)
 
     memset( &stack, 0, sizeof( STACKFRAME64 ) );
 
+    CONTEXT* context = new CONTEXT();
+
     process                = GetCurrentProcess();
     thread                 = GetCurrentThread();
     displacement           = 0;
 #if !defined(_M_AMD64)
-    stack.AddrPC.Offset    = (*ctx).Eip;
+    stack.AddrPC.Offset    = (*context).Eip;
     stack.AddrPC.Mode      = AddrModeFlat;
-    stack.AddrStack.Offset = (*ctx).Esp;
+    stack.AddrStack.Offset = (*context).Esp;
     stack.AddrStack.Mode   = AddrModeFlat;
-    stack.AddrFrame.Offset = (*ctx).Ebp;
+    stack.AddrFrame.Offset = (*context).Ebp;
     stack.AddrFrame.Mode   = AddrModeFlat;
 #endif
 
-    CONTEXT* context = new CONTEXT();
     context->ContextFlags = CONTEXT_FULL;
     RtlCaptureContext(context);
 #ifdef _M_X64
@@ -137,7 +138,7 @@ void Utils::print_callstack(String category, uint offset)
 bool Utils::ask_yes_no(const String& message)
 {
 #if PLATFORM_WINDOWS
-    return MessageBox(NULL, message.wc(), L"Decide", MB_YESNO) == IDYES;
+    return MessageBox(NULL, String(message).begin(), "Decide", MB_YESNO) == IDYES;
 #else
     return false;
 #endif

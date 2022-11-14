@@ -8,22 +8,6 @@
 // ------------------------ Defines ------------------------
 #define STRINGIFY(a) #a
 
-// Platform definitions
-#define PLATFORM_WINDOWS 0
-
-#if defined(_WINDOWS)
-#undef PLATFORM_WINDOWS
-#define PLATFORM_WINDOWS 1
-#endif
-
-// Debug definitions
-#define DEBUG 0
-
-#if defined(_DEBUG)
-#undef DEBUG
-#define DEBUG 1
-#endif
-
 // Misc definitions
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__))
 
