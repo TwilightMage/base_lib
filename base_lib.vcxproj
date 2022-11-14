@@ -227,7 +227,6 @@
     <ClInclude Include="include\base_lib\Name.h" />
     <ClInclude Include="include\base_lib\Pair.h" />
     <ClInclude Include="include\base_lib\Path.h" />
-    <ClInclude Include="include\base_lib\Paths.h" />
     <ClInclude Include="include\base_lib\performance.h" />
     <ClInclude Include="include\base_lib\Pointers.h" />
     <ClInclude Include="include\base_lib\Proces.h" />

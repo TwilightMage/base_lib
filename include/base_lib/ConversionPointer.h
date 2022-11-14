@@ -1,19 +1,21 @@
 ﻿#pragma once
-#include "framework.h"
 
-template<typename SourceType>
+#include "framework.h"
+#include "IConvertible.h"
+
+template<typename TargetType>
 class ConversionPointer
 {
 public:
-    FORCEINLINE SourceType& get() const
+    FORCEINLINE TargetType& get() const
     {
         return *ptr_;
     }
     
     template<typename InputType>
-    FORCEINLINE void set(InputType val) const
+    FORCEINLINE void set(InputType val) const requires Convertible<InputType, TargetType>
     {
-        *ptr_ = SourceType(val);
+        convert<InputType, TargetType>(val, *ptr_);
     }
 
     FORCEINLINE operator bool() const
@@ -42,5 +44,5 @@ public:
     }
 
 private:
-    SourceType* ptr_ = nullptr;
+    TargetType* ptr_ = nullptr;
 };
