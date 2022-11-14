@@ -222,4 +222,8 @@
             <Item Name="[3]" ExcludeView="simple">data[3]</Item>
         </Expand>
     </Type>
+
+    <Type Name="Color">
+        <DisplayString>{{ r={(int)r}, g={(int)g}, b={(int)b}, a={(int)a} }}</DisplayString>
+    </Type>
 </AutoVisualizer>

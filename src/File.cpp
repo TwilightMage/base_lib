@@ -1,8 +1,8 @@
-#include "../include/File.h"
+#include "../include/base_lib/File.h"
 
 String File::read_file(const Path& path)
 {
-	std::ifstream file(path.get_absolute().to_string().std(), std::ios::ate | std::ios::binary);
+	std::ifstream file(path.get_absolute_string().std(), std::ios::ate | std::ios::binary);
 
 	if (!file.is_open())
 	{

@@ -1,11 +1,15 @@
 ﻿#pragma once
 
-#include "Pointers.h"
 #include "IConvertible.h"
 #include "List.h"
+#include "Map.h"
+#include "Name.h"
+#include "Pointers.h"
 #include "SimpleMap.h"
 #include "String.h"
 #include "TextReader.h"
+
+class Name;
 
 namespace Compound
 {    
@@ -243,35 +247,42 @@ namespace Compound
         uint column;
         String bad_token;
     };
-    
-    class EXPORT Converter
+
+    namespace Convert
     {
-    public:
-        virtual String format_value(const Value& val) const = 0;
-        virtual Object parse_value(const String& str) const = 0;
+        class EXPORT IParser
+        {
+        public:
+            virtual Value parse_value(const String& str) const = 0;
 
-        bool try_parse_value(const String& str, Object& out_value) const;
-    };
+            bool try_parse_value(const String& str, Value& out_value) const;
+        };
 
-    namespace Converters
-    {   
-        class EXPORT JSON : public Converter
+        class EXPORT IFormatter
+        {
+        public:
+            virtual String format_value(const Value& val) const = 0;
+            virtual bool write_to(std::ostream& stream, const Value& val) const = 0;
+        };
+        
+        class EXPORT JSON : public IParser, public IFormatter
         {
         public:
             String format_value(const Value& val) const override;
-            Object parse_value(const String& str) const override;
+            bool write_to(std::ostream& stream, const Value& val) const override;
+            Value parse_value(const String& str) const override;
 
             bool separate_with_new_line = false;
 
         private:
-            String format(const Value& val, uint depth) const;
-            FORCEINLINE String tab_offset(uint depth) const { return separate_with_new_line ? String(' ', depth * 4) : ""; }
+            void write(std::ostream& stream, const Value& val, uint depth) const;
+            FORCEINLINE String tab_offset(uint depth) const { return separate_with_new_line ? String(' ', depth * 2) : ""; }
             FORCEINLINE const String new_line() const { return separate_with_new_line ? "\n" : ""; }
 
             Value read_value() const;
             void read_null() const;
             String read_string() const;
-            double read_number() const;
+            Value read_number() const;
             bool read_bool() const;
             Object read_object() const;
             Array read_array() const;
@@ -280,8 +291,26 @@ namespace Compound
             inline const static String space_chars = " \n\r\t";
         };
 
-        class XML; // TODO: Implement Compound XML converter
-        class YAML; // TODO: Implement Compound YAML converter
+        class EXPORT XML; // TODO: Implement Compound XML converter
+        
+        class EXPORT YAML : public IFormatter
+        {
+        public:
+            String format_value(const Value& val) const override;
+            bool write_to(std::ostream& stream, const Value& val) const override;
+
+        private:
+            void write(std::ostream& stream, const Value& val, uint depth) const;
+        };
+
+        static Map<Name, Shared<IParser>(*)()> parsers = {
+            {"json", []() -> Shared<IParser>{ return MakeShared<JSON>(); }}
+        };
+        
+        static Map<Name, Shared<IFormatter>(*)()> formatters = {
+            {"json", []() -> Shared<IFormatter>{ return MakeShared<JSON>(); }},
+            {"yaml", []() -> Shared<IFormatter>{ return MakeShared<YAML>(); }}
+        };
     }
     
     class EXPORT Value : public ISerializable, public IConvertible<String>, public IConvertible<char>, public IConvertible<short>, public IConvertible<int32>, public IConvertible<int64>, public IConvertible<bool>, public IConvertible<float>, public IConvertible<double>, public IConvertible<Array>, public IConvertible<Object>

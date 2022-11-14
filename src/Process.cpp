@@ -1,8 +1,8 @@
 ﻿#include <process.h>
 
-#include "../include/Map.h"
-#include "../include/Path.h"
-#include "../include/Proces.h"
+#include "../include/base_lib/Map.h"
+#include "../include/base_lib/Path.h"
+#include "../include/base_lib/Proces.h"
 
 Process::Process()
     : dataBlock(nullptr)
@@ -93,6 +93,11 @@ Process::Process(const Path& path, const List<String>& args)
     CloseHandle(inputPipe_R);
     CloseHandle(outputPipe_W);
     CloseHandle(errorPipe_W);
+}
+
+int Process::call(const Path& path, const List<String>& args)
+{
+    return system((path.get_absolute_string() + " " + String::join(args, " ")).c());
 }
 
 bool Process::is_alive() const

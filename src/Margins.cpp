@@ -1,4 +1,4 @@
-﻿#include "../include/Margins.h"
+﻿#include "../include/base_lib/Margins.h"
 
 Margins::Margins()
     : left(0)

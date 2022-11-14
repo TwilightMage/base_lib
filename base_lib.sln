@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base_lib", "base_lib.vcxproj", "{BCEE0D7B-B488-44D3-8B10-46E10B23DB4A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tests", "tests\tests.vcxproj", "{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -18,5 +20,13 @@ Global
 		{BCEE0D7B-B488-44D3-8B10-46E10B23DB4A}.Release|Win32.Build.0 = Release|Win32
 		{BCEE0D7B-B488-44D3-8B10-46E10B23DB4A}.Release|x64.ActiveCfg = Release|x64
 		{BCEE0D7B-B488-44D3-8B10-46E10B23DB4A}.Release|x64.Build.0 = Release|x64
+		{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}.Debug|Win32.Build.0 = Debug|Win32
+		{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}.Debug|x64.ActiveCfg = Debug|x64
+		{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}.Debug|x64.Build.0 = Debug|x64
+		{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}.Release|Win32.ActiveCfg = Release|Win32
+		{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}.Release|Win32.Build.0 = Release|Win32
+		{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}.Release|x64.ActiveCfg = Release|x64
+		{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal

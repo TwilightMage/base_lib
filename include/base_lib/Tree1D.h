@@ -3,7 +3,7 @@
 #include <functional>
 
 
-#include "../include/Math.h"
+#include "Math.h"
 
 template<typename KeyType, typename ValueType>
 class Tree1D

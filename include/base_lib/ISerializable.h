@@ -14,8 +14,8 @@ public:
 template<typename T>
 concept ImplicitlySerializable = requires(const T a1, T a2, std::ostream& os, std::istream& is)
 {
-    a1.write_to_stream(os);
-    a2.read_from_stream(is);
+    { a1.write_to_stream(os) } -> std::same_as<void>;
+    { a2.read_from_stream(is) } -> std::same_as<void>;
 };
 
 template<typename T>

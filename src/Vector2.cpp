@@ -1,9 +1,9 @@
-﻿#include "../include/Vector2.h"
+﻿#include "../include/base_lib/Vector2.h"
 
 #include <glm/glm.hpp>
 
-#include "../include/Math.h"
-#include "../include/Vector3.h"
+#include "../include/base_lib/Math.h"
+#include "../include/base_lib/Vector3.h"
 
 Vector2::Vector2()
     : x(0.0f)

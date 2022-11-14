@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{BCEE0D7B-B488-44D3-8B10-46E10B23DB4A}</ProjectGuid>
+    <ProjectGuid>{1E1E31E7-5E3B-43F5-AA0C-479291E53D55}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>base_lib</RootNamespace>
+    <RootNamespace>tests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -30,26 +30,26 @@
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -75,31 +75,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>intermediate\$(Configuration)_$(Platform)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)third_party/include/;</IncludePath>
-    <PublicIncludeDirectories>$(ProjectDir)include/</PublicIncludeDirectories>
+    <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)_tests\</OutDir>
+    <IntDir>$(SolutionDir)intermediate\$(Configuration)_$(Platform)_tests\</IntDir>
+    <PublicIncludeDirectories>$(ProjectDir)include</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)third_party/include/;</IncludePath>
-    <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>intermediate\$(Configuration)_$(Platform)\</IntDir>
-    <PublicIncludeDirectories>$(ProjectDir)include/</PublicIncludeDirectories>
+    <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)_tests\</OutDir>
+    <IntDir>$(SolutionDir)intermediate\$(Configuration)_$(Platform)_tests\</IntDir>
+    <PublicIncludeDirectories>$(ProjectDir)include</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>intermediate\$(Configuration)_$(Platform)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)third_party/include/;</IncludePath>
-    <PublicIncludeDirectories>$(ProjectDir)include/</PublicIncludeDirectories>
+    <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)_tests\</OutDir>
+    <IntDir>$(SolutionDir)intermediate\$(Configuration)_$(Platform)_tests\</IntDir>
+    <PublicIncludeDirectories>$(ProjectDir)include</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)third_party/include/;</IncludePath>
-    <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>intermediate\$(Configuration)_$(Platform)\</IntDir>
-    <PublicIncludeDirectories>$(ProjectDir)include/</PublicIncludeDirectories>
+    <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)_tests\</OutDir>
+    <IntDir>$(SolutionDir)intermediate\$(Configuration)_$(Platform)_tests\</IntDir>
+    <PublicIncludeDirectories>$(ProjectDir)include</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -107,13 +103,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -123,31 +119,31 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -156,102 +152,30 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Base64.cpp" />
-    <ClCompile Include="src\Color.cpp" />
-    <ClCompile Include="src\Compound.cpp" />
-    <ClCompile Include="src\DateTime.cpp" />
-    <ClCompile Include="src\String.cpp" />
-    <ClCompile Include="src\File.cpp" />
-    <ClCompile Include="src\Logger.cpp" />
-    <ClCompile Include="src\LogStream.cpp" />
-    <ClCompile Include="src\Margins.cpp" />
-    <ClCompile Include="src\Matrix4x4.cpp" />
-    <ClCompile Include="src\Name.cpp" />
-    <ClCompile Include="src\Path.cpp" />
-    <ClCompile Include="src\Process.cpp" />
-    <ClCompile Include="src\Quaternion.cpp" />
-    <ClCompile Include="src\Rect.cpp" />
-    <ClCompile Include="src\Regex.cpp" />
-    <ClCompile Include="src\stb.cpp" />
-    <ClCompile Include="src\SystemIO.cpp" />
-    <ClCompile Include="src\TeeBuf.cpp" />
-    <ClCompile Include="src\TextReader.cpp" />
-    <ClCompile Include="src\Utils.cpp" />
-    <ClCompile Include="src\Vector2.cpp" />
-    <ClCompile Include="src\Vector3.cpp" />
-    <ClCompile Include="src\Version.cpp" />
+    <ClCompile Include="tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\base_lib\Array.h" />
-    <ClInclude Include="include\base_lib\Array2D.h" />
-    <ClInclude Include="include\base_lib\Assert.h" />
-    <ClInclude Include="include\base_lib\Base64.h" />
-    <ClInclude Include="include\base_lib\BasicTypes.h" />
-    <ClInclude Include="include\base_lib\BinaryStream.h" />
-    <ClInclude Include="include\base_lib\Color.h" />
-    <ClInclude Include="include\base_lib\Compound.h" />
-    <ClInclude Include="include\base_lib\ConversionPointer.h" />
-    <ClInclude Include="include\base_lib\DateTime.h" />
-    <ClInclude Include="include\base_lib\Delegate.h" />
-    <ClInclude Include="include\base_lib\FastOperator.h" />
-    <ClInclude Include="include\base_lib\File.h" />
-    <ClInclude Include="include\base_lib\framework.h" />
-    <ClInclude Include="include\base_lib\IConvertible.h" />
-    <ClInclude Include="include\base_lib\IData.h" />
-    <ClInclude Include="include\base_lib\ISerializable.h" />
-    <ClInclude Include="include\base_lib\List.h" />
-    <ClInclude Include="include\base_lib\Logger.h" />
-    <ClInclude Include="include\base_lib\LogStream.h" />
-    <ClInclude Include="include\base_lib\Map.h" />
-    <ClInclude Include="include\base_lib\Margins.h" />
-    <ClInclude Include="include\base_lib\Math.h" />
-    <ClInclude Include="include\base_lib\Matrix4x4.h" />
-    <ClInclude Include="include\base_lib\Name.h" />
-    <ClInclude Include="include\base_lib\Pair.h" />
-    <ClInclude Include="include\base_lib\Path.h" />
-    <ClInclude Include="include\base_lib\Paths.h" />
-    <ClInclude Include="include\base_lib\performance.h" />
-    <ClInclude Include="include\base_lib\Pointers.h" />
-    <ClInclude Include="include\base_lib\Proces.h" />
-    <ClInclude Include="include\base_lib\Quaternion.h" />
-    <ClInclude Include="include\base_lib\Random.h" />
-    <ClInclude Include="include\base_lib\Rect.h" />
-    <ClInclude Include="include\base_lib\Regex.h" />
-    <ClInclude Include="include\base_lib\Set.h" />
-    <ClInclude Include="include\base_lib\SimpleMap.h" />
-    <ClInclude Include="include\base_lib\stb.h" />
-    <ClInclude Include="include\base_lib\StreamUtils.h" />
-    <ClInclude Include="include\base_lib\String.h" />
-    <ClInclude Include="include\base_lib\SystemIO.h" />
-    <ClInclude Include="include\base_lib\TeeBuf.h" />
-    <ClInclude Include="include\base_lib\TextReader.h" />
-    <ClInclude Include="include\base_lib\Tree1D.h" />
-    <ClInclude Include="include\base_lib\Tree2D.h" />
-    <ClInclude Include="include\base_lib\Utils.h" />
-    <ClInclude Include="include\base_lib\Vector2.h" />
-    <ClInclude Include="include\base_lib\Vector3.h" />
-    <ClInclude Include="include\base_lib\Version.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="base_lib.natvis" />
+    <ProjectReference Include="..\base_lib.vcxproj">
+      <Project>{bcee0d7b-b488-44d3-8b10-46e10b23db4a}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

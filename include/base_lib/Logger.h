@@ -22,12 +22,16 @@ public:
     
     static void new_log_record(ELogLevel level, const String& category, const String& message);
 
+    static void set_colors_enabled(bool enabled);
+
 private:
     Logger(const Path& root_path);
     
     LogStream log_stream_;
     std::mutex log_stream_mutex_;
 
+    bool colors_enabled_ = true;
+    
     static Logger* instance_;
 };
 

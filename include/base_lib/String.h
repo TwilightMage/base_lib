@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include <iomanip>
 #include <sstream>
 
 #include "framework.h"
@@ -29,7 +28,7 @@ public:
 
 	FORCEINLINE std::string std() const;
 	FORCEINLINE const char* c() const;
-	// return the cope of inner string
+	// return the copy of inner string
 	// may cause memory leak if you are not careful
 	char* c_copy() const;
 	wchar_t* wc() const;
@@ -68,22 +67,43 @@ public:
 	Pair<String, String> split_at(uint position, bool skip_split_char = false) const;
 	List<uint> find(const String& substr) const;
 
+	String escape_chars() const;
+	static String escape_char(char ch);
+	
+	String unescape_chars() const;
+	static char unescape_char(char ch);
+
 	static bool replace_single(String& src, const String& from, const String& to);
 
 	template<typename T>
-	static String join(List<T> items, const String& glue)
+	static String join(const List<T>& items, const String& glue)
 	{
-		if (items.Length() == 0) return "";
+		uint out_len = (items.length() - 1) * glue.length();
 
-		std::stringstream str;
+		List<String> strings(items.length());
 
-		for (uint i = 0; i < items.Length(); i++)
+		for (uint i = 0; i < items.length(); i++)
 		{
-			if (i > 0) str << glue.std();
-			str << items[i];
+			strings[i] = String::make(items[i]);
+			out_len += strings[i].length();
 		}
 
-		return str.str();
+		String result(' ', out_len);
+
+		char* ptr = result.inner_;
+		uint i = 0;
+		while (true)
+		{
+			memcpy(ptr, strings[i].inner_, strings[i].length());
+			ptr += strings[i].length();
+
+			if (ptr >= result.end()) return result;
+			
+			memcpy(ptr, glue.inner_, glue.length());
+			ptr += glue.length();
+
+			++i;
+		}
 	}
 
 	template<typename T>
@@ -166,7 +186,7 @@ private:
 };
 
 template<>
-inline String String::join<String>(List<String> items, const String& glue)
+inline String String::join<String>(const List<String>& items, const String& glue)
 {
 	if (items.length() == 0) return "";
 
@@ -185,6 +205,22 @@ template<>
 inline bool String::parse<bool>(const String& rhs)
 {
 	return rhs == "true" || rhs == "True";
+}
+
+template<>
+inline  String String::make<double>(double d)
+{
+	std::stringstream str;
+	str << std::setprecision(16) << d;
+	return str.str();
+}
+
+template<>
+inline  String String::make<float>(float f)
+{
+	std::stringstream str;
+	str << std::setprecision(8) << f;
+	return str.str();
 }
 
 inline String operator+(const char* const l, const String& r)

@@ -1,4 +1,4 @@
-#include "../include/TeeBuf.h"
+#include "../include/base_lib/TeeBuf.h"
 
 TeeBuf::TeeBuf(List<std::streambuf*> buffs)
 	: buffs(buffs)

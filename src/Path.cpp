@@ -1,8 +1,8 @@
-#include "../include/Path.h"
+#include "../include/base_lib/Path.h"
 
 #include <filesystem>
 
-#include "../include/Regex.h"
+#include "../include/base_lib/Regex.h"
 
 Path Path::app_path = Path();
 
@@ -132,18 +132,11 @@ Path Path::operator+(const Path& rhs) const
 
 String Path::to_string() const
 {
-	if (parent.is_empty())
-	{
-		return filename + extension;
-	}
-	else if (extension.is_empty())
-	{
-		return parent + '/' + filename;
-	}
-	else
-	{
-		return parent + '/' + filename + '.' + extension;
-	}
+	String result = filename;
+	if (!parent.is_empty()) result = parent + '/' + result;
+	if (!extension.is_empty()) result = result + '.' + extension;
+
+	return result;
 }
 
 String Path::get_absolute_string() const
@@ -185,7 +178,7 @@ void Path::setup_from_string(const String& string)
 
 		parent = path.parent_path().string();
 		filename = path.stem().string();
-		extension = path.extension().string();
+		extension = path.has_extension() ? path.extension().string().substr(1) : "";
 
 		if (filename.is_empty() && extension.is_empty())
 		{

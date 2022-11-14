@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <algorithm>
 #include <functional>
 #include <stdexcept>
 #include <vector>
@@ -88,7 +89,7 @@ public:
         if (length > 0)
         {
             inner_ = new ValueType[allocated_length_];
-            if constexpr (std::is_convertible<ValueType, std::size_t>::value)
+            if constexpr (Data<ValueType>)
             {
                 ZeroMemory(inner_, sizeof(ValueType) * length_);
             }
@@ -96,9 +97,27 @@ public:
             {
                 for (uint i = 0; i < length; i++)
                 {
-                    inner_[i] = ValueType();
+                    inner_[i] = std::move(ValueType());
                 }
             }
+        }
+    }
+
+    List(uint length, std::function<ValueType(uint index)> generator)
+        : List(length)
+    {
+        for (uint i = 0; i < length; i++)
+        {
+            inner_[i] = generator(i);
+        }
+    }
+
+    List(uint length, const ValueType& placeholder)
+        : List(length)
+    {
+        for (uint i = 0; i < length; i++)
+        {
+            inner_[i] = placeholder;
         }
     }
 
@@ -106,26 +125,6 @@ public:
     static List of(Items... items)
     {
         return {{items...}};
-    }
-
-    static List generate(uint size, std::function<ValueType(uint index)> generator)
-    {
-        auto result = List(size);
-        for (uint i = 0; i < size; i++)
-        {
-            result[i] = generator(i);
-        }
-        return result;
-    }
-
-    static List generate(uint size, const ValueType& placeholder)
-    {
-        auto result = List(size);
-        for (uint i = 0; i < size; i++)
-        {
-            result[i] = placeholder;
-        }
-        return result;
     }
 
     List operator=(const List& rhs)
@@ -647,81 +646,47 @@ public:
 
     void sort() requires CanCheckLess<ValueType>
     {
-        if constexpr (CanCheckLess<ValueType>)
+        if constexpr (HaveLessOperator<ValueType>)
         {
-            if (inner_ == nullptr) return;
-        
-            for (uint i = 0; i < length_ - 1; i++)
-            {
-                for (uint j = i + 1; j < length_; j++)
-                {
-                    if (check_less(inner_[i], inner_[j]))
-                    {
-                        std::swap(inner_[i], inner_[j]);
-                    }
-                }
-            }
+            std::sort(begin(), end());
         }
-        else
+        else if constexpr (Data<ValueType>)
         {
-            // TODO: C++ must somehow handle this smarter
+            const static bool(*op)(const ValueType&, const ValueType&) = [](const ValueType& lhs, const ValueType& rhs) -> bool const
+            {
+                return memcmp(&lhs, &rhs, sizeof(ValueType)) < 0;
+            };
+
+            std::sort(begin(), end(), op);;
         }
     }
 
     void sort_reverse() requires CanCheckLess<ValueType>
     {
-        if constexpr (CanCheckLess<ValueType>)
+        if constexpr (HaveLessOperator<ValueType>)
         {
-            if (inner_ == nullptr) return;
-        
-            for (uint i = 0; i < length_ - 1; i++)
-            {
-                for (uint j = i + 1; j < length_; j++)
-                {
-                    if (check_less(inner_[j], inner_[i]))
-                    {
-                        std::swap(inner_[i], inner_[j]);
-                    }
-                }
-            }
+            std::sort(begin(), end(), std::greater<ValueType>());
         }
-        else
+        else if constexpr (Data<ValueType>)
         {
-            // TODO: C++ must somehow handle this smarter
+            const static bool(*op)(const ValueType&, const ValueType&) = [](const ValueType& lhs, const ValueType& rhs) -> bool
+            {
+                return memcmp(&lhs, &rhs, sizeof(ValueType)) > 0;
+            };
+
+            std::sort(begin(), end(), op);;
         }
     }
 
     template<class Predicate>
     void sort_predicate()
     {
-        if (inner_ == nullptr) return;
-        
-        for (uint i = 0; i < length_ - 1; i++)
-        {
-            for (uint j = i + 1; j < length_; j++)
-            {
-                if (Predicate(inner_[i], inner_[j]))
-                {
-                    std::swap(inner_[i], inner_[j]);
-                }
-            }
-        }
+        std::sort(begin(), end(), Predicate());
     }
 
     void sort_predicate(const std::function<bool(ValueType a, ValueType b)> predicate)
     {
-        if (inner_ == nullptr) return;
-        
-        for (uint i = 0; i < length_ - 1; i++)
-        {
-            for (uint j = i + 1; j < length_; j++)
-            {
-                if (predicate(inner_[i], inner_[j]))
-                {
-                    std::swap(inner_[i], inner_[j]);
-                }
-            }
-        }
+        std::sort(begin(), end(), predicate);
     }
 
     List operator+(const ValueType& rhs)

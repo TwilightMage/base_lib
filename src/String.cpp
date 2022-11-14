@@ -1,10 +1,10 @@
-#include "../include/String.h"
+#include "../include/base_lib/String.h"
 
-#include "../include/BasicTypes.h"
-#include "../include/framework.h"
-#include "../include/Math.h"
-#include "../include/Name.h"
-#include "../include/StreamUtils.h"
+#include "../include/base_lib/BasicTypes.h"
+#include "../include/base_lib/framework.h"
+#include "../include/base_lib/Math.h"
+#include "../include/base_lib/Name.h"
+#include "../include/base_lib/StreamUtils.h"
 
 String::String()
 	: inner_(new char('\0'))
@@ -278,7 +278,7 @@ int String::last_index_of_char(const String& chars) const
 
 String String::substring(int start, uint num) const
 {
-	if (start > 0)
+	if (start >= 0)
 	{
 		if (static_cast<uint>(start) >= length_) return "";
 	}
@@ -290,11 +290,8 @@ String String::substring(int start, uint num) const
 	const uint result_end = Math::min(length_, start + num);
 
 	String result(' ', result_end - start);
-
-	for (uint i = start; i < result_end; i++)
-	{
-		result[i - start] = inner_[i];
-	}
+	
+	memcpy(result.inner_, inner_ + start, result_end - start);
 
 	return result;
 }
@@ -555,6 +552,121 @@ List<uint> String::find(const String& substr) const
 	return result;
 }
 
+Map<char, char> escape = {
+	{'\x07', 'a'},
+	{'\x08', 'b'},
+	{'\x09', 't'},
+	{'\x0A', 'n'},
+	{'\x0B', 'v'},
+	{'\x0C', 'f'},
+	{'\x0D', 'r'},
+	{'\x1B', 'e'},
+
+	{'"', '"'},
+	{'\'', '\''},
+	{'?', '?'},
+	{'\\', '\\'}
+};
+
+String String::escape_chars() const
+{
+	uint new_length = length_;
+	List<uint> positions;
+
+	for (uint i = 0; i < length_; i++)
+	{
+		if (escape.contains(inner_[i]))
+		{
+			positions += i;
+			++new_length;
+		}
+	}
+
+	String result(' ', new_length);
+
+	uint ptr_src = 0;
+	uint ptr_dst = 0;
+	uint last_pos = 0;
+	for (uint i = 0; i < positions.length(); i++)
+	{
+		memcpy(result.inner_ + ptr_dst, inner_ + ptr_src, positions[i] - last_pos);
+		
+		ptr_src += positions[i] - last_pos;
+		ptr_dst += positions[i] - last_pos;
+		
+		result.inner_[ptr_dst++] = '\\';
+		result.inner_[ptr_dst++] = escape[inner_[ptr_src++]];
+		
+		last_pos = positions[i] + 1;
+	}
+	memcpy(result.inner_ + ptr_dst, inner_ + ptr_src, length_ - last_pos);
+
+	return result;
+}
+
+String String::escape_char(char ch)
+{
+	if (escape.contains(ch)) return String("\\") + escape[ch];
+	return ch;
+}
+
+const static Map<char, char> unescape = {
+	{'a', '\x07'},
+	{'b', '\x08'},
+	{'t', '\x09'},
+	{'n', '\x0A'},
+	{'v', '\x0B'},
+	{'f', '\x0C'},
+	{'r', '\x0D'},
+	{'e', '\x1B'},
+
+	{'"', '"'},
+	{'\'', '\''},
+	{'?', '?'},
+	{'\\', '\\'}
+};
+
+String String::unescape_chars() const
+{
+	uint new_length = length_;
+	List<uint> positions;
+
+	for (uint i = 0; i < length_; i++)
+	{
+		if (inner_[i] == '\\')
+		{
+			positions += i;
+			--new_length;
+		}
+	}
+
+	String result(' ', new_length);
+
+	uint ptr_src = 0;
+	uint ptr_dst = 0;
+	uint last_pos = 0;
+	for (uint i = 0; i < positions.length(); i++)
+	{
+		memcpy(result.inner_ + ptr_dst, inner_ + ptr_src, positions[i] - last_pos);
+		
+		ptr_src += positions[i] - last_pos;
+		ptr_dst += positions[i] - last_pos;
+		
+		ptr_src++;
+		result.inner_[ptr_dst++] = unescape[inner_[ptr_src++]];
+		
+		last_pos = positions[i] + 2;
+	}
+	memcpy(result.inner_ + ptr_dst, inner_ + ptr_src, length_ - last_pos);
+
+	return result;
+}
+
+char String::unescape_char(char ch)
+{
+	return unescape.find_or_default(ch, ch);
+}
+
 bool String::replace_single(String& src, const String& from, const String& to)
 {
 	const int pos = src.index_of(from);
@@ -721,7 +833,7 @@ String String::operator+(char ch) const
 	String result = String(' ', length_ + 1);
 
 	memcpy(result.inner_, inner_, length_);
-	result.inner_[length_ - 1] = ch;
+	result.inner_[length_] = ch;
 
 	return result;
 }

@@ -61,7 +61,7 @@ public:
 private:
     random_engine rd;
 
-    inline static random_engine static_rd = random_engine(0);
+    inline static random_engine static_rd = random_engine((uint)time(0));
 };
 
 template<>

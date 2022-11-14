@@ -61,6 +61,7 @@
     #include <windows.h>
 #endif
 
+#include <stdexcept>
 #include "BasicTypes.h"
 
 
@@ -116,7 +117,7 @@ FORCEINLINE MemberType* hack_member(ObjectType* obj, uint byte_offset)
 	return reinterpret_cast<MemberType*>(reinterpret_cast<byte*>(obj) + byte_offset);
 }
 
-class NotImplementedException: public std::exception {};
+class NotImplementedException: public std::runtime_error {};
 
 
 

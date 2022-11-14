@@ -23,20 +23,3 @@ concept HaveLessOperator = requires(const A& a, const B& b)
 
 template<typename A, typename B = A>
 concept CanCheckLess = HaveLessOperator<A, B> || Data<A> && Data<B> && std::same_as<A, B>;
-
-template<typename A, typename B = A>
-FORCEINLINE bool check_less(const A& a, const B& b) requires CanCheckLess<A, B>
-{
-    if constexpr (HaveLessOperator<A, B>)
-    {
-        return a < b;
-    }
-    else if constexpr (Data<A> && Data<B>)
-    {
-        return memcmp(&a, &b, sizeof(A)) < 0;
-    }
-    else
-    {
-        return false;
-    }
-}

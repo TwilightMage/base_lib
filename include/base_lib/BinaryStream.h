@@ -20,12 +20,10 @@ public:
         stream_.close();
     }
     
-    template<typename T>
+    template<Serializable T>
     T read()
     {
-        T result;
-        stream_.read((char*)&result, sizeof(T));
-        return result;
+        return StreamUtils::read<T>(stream_);
     }
     
 private:
@@ -57,10 +55,10 @@ public:
         stream_.close();
     }
     
-    template<typename T>
+    template<Serializable T>
     void write(const T& val)
     {
-        stream_.write((char*)&val, sizeof(T));
+        StreamUtils::write(stream_, val);
     }
     
 private:

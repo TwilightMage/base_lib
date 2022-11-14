@@ -25,6 +25,8 @@ public:
     Process();
     Process(const Path& path, const List<String>& args);
 
+    static int call(const Path& path, const List<String>& args);
+
     bool is_alive() const;
     void wait();
     void stop();

@@ -1,6 +1,6 @@
-﻿#include "../include/Rect.h"
+﻿#include "../include/base_lib/Rect.h"
 
-#include "../include/Math.h"
+#include "../include/base_lib/Math.h"
 
 Rect::Rect()
     : x(0)

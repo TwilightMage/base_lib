@@ -1,6 +1,6 @@
-﻿#include "../include/Logger.h"
+﻿#include "../include/base_lib/Logger.h"
 
-#include "../include/Path.h"
+#include "../include/base_lib/Path.h"
 
 Logger* Logger::instance_ = nullptr;
 
@@ -17,7 +17,16 @@ void Logger::new_log_record(ELogLevel level, const String& category, const Strin
     static const char* levelColors[4] = { CONSOLE_WHITE, CONSOLE_CYAN, CONSOLE_YELLOW, CONSOLE_RED };
 
     instance_->log_stream_mutex_.lock();
-    instance_->log_stream_ << levelColors[static_cast<int>(level)] << "[" << DateTime::now().to_string().c() << "] [" << levelNames[static_cast<int>(level)] << "] [" << category.c() << "] " << message.c() << CONSOLE_RESET << "\n";
+    const auto color_in = instance_->colors_enabled_ ? levelColors[static_cast<int>(level)] : "";
+    const auto color_out = instance_->colors_enabled_ ? CONSOLE_RESET : "";
+    instance_->log_stream_ << color_in << "[" << DateTime::now().to_string().c() << "] [" << levelNames[static_cast<int>(level)] << "] [" << category.c() << "] " << message.c() << color_out << "\n";
+    instance_->log_stream_mutex_.unlock();
+}
+
+void Logger::set_colors_enabled(bool enabled)
+{
+    instance_->log_stream_mutex_.lock();
+    instance_->colors_enabled_ = enabled;
     instance_->log_stream_mutex_.unlock();
 }
 

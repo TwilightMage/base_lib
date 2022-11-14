@@ -1,8 +1,8 @@
-﻿#include "../include/Compound.h"
+﻿#include "../include/base_lib/Compound.h"
 
 #include <deque>
 
-#include "../include/Math.h"
+#include "../include/base_lib/Math.h"
 
 /*Map<int, SaveGame::Parser> parsers = {
     {1, {
@@ -75,82 +75,112 @@ char const* Compound::ParseException::what() const
     }
 }
 
-String Compound::Converters::JSON::format(const Value& val, uint depth) const
+String Compound::Convert::JSON::format_value(const Value& val) const
 {
-    String result = "";
+    if (val.get_type() != Type::Object && val.get_type() != Type::Array) return "";
 
+    std::stringstream stream;
+    write(stream, val, 0);
+    return stream.str();
+}
+
+bool Compound::Convert::JSON::write_to(std::ostream& stream, const Value& val) const
+{
+    if (val.get_type() != Type::Object && val.get_type() != Type::Array) return false;
+    
+    write(stream, val, 0);
+    return true;
+}
+
+Compound::Value Compound::Convert::JSON::parse_value(const String& str) const
+{
+    reader = TextReader(str);
+    if (reader.peek() == '[') return read_array();
+    if (reader.peek() == '{') return read_object();
+    throw ParseException(reader.get_line(), reader.get_column());
+}
+
+void Compound::Convert::JSON::write(std::ostream& stream, const Value& val, uint depth) const
+{
     switch (val.get_type())
     {
     case Type::Null:
-        result = "null";
+        stream << "null";
         break;
     case Type::String:
-        result = "\"" + ((String)val).replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+        stream << "\"" + ((String)val).escape_chars() + "\"";
         break;
     case Type::Char:
-        result = String::make((int32)val);
+        stream << val.get_int32();
         break;
     case Type::Short:
-        result = String::make((short)val);
+        stream << val.get_short();
         break;
     case Type::Int32:
-        result = String::make((int32)val);
+        stream << val.get_int32();
         break;
     case Type::Int64:
-        result = String::make((int64)val);
+        stream << val.get_int64();
         break;
     case Type::Bool:
-        result = (bool)val ? "true" : "false";
+        stream << ((bool)val ? "true" : "false");
         break;
     case Type::Float:
-        result = String::make((float)val);
-        if (!result.contains('.')) result += ".0";
+        {
+            String strf = String::make((float)val);
+            if (!strf.contains('.')) strf += ".0";
+            stream << strf;
+        }
         break;
     case Type::Double:
-        result = String::make((double)val);
-        if (!result.contains('.')) result += ".0";
+        {
+            String strd = String::make((double)val);
+            if (!strd.contains('.')) strd += ".0";
+            stream << strd;
+        }
         break;
     case Type::Array:
         if (((Array)val).length() == 0)
         {
-            result = "[]";
+            stream << "[]";
         }
         else
         {
-            result = "[" + new_line() + tab_offset(depth + 1) + String::join<String>(val.get_array().select<String>([&](const Value& v) -> String{ return format(v, depth + 1); }), (separate_with_new_line ? "," : ", ") + new_line() + tab_offset(depth + 1)) + new_line() + tab_offset(depth) + "]";
+            stream << "[" << new_line() << tab_offset(depth + 1);
+            const auto arr = val.get_array();
+            for (uint i = 0; i < arr.length(); i++)
+            {
+                write(stream, arr[i], depth + 1);
+                if (i < arr.length() - 1) stream << ',' << new_line() << tab_offset(depth + 1);
+            }
+            stream << new_line() << tab_offset(depth) << "]";
         }
         break;
     case Type::Object:
         if (((Object)val).size() == 0)
         {
-            result = "{}";
+            stream << "{}";
         }
         else
         {
-            result = "{" + new_line() + tab_offset(depth + 1) + String::join<String>(val.get_object().entries.select<String>([&](Pair<String, Value>* pair) -> String{ return "\"" + pair->key + "\": " + format(pair->value, depth + 1); }), (separate_with_new_line ? "," : ", ") + new_line() + tab_offset(depth + 1)) + new_line() + tab_offset(depth) + "}";
+            stream << "{" << new_line() << tab_offset(depth + 1);
+            const auto obj = val.get_object();
+            for (uint i = 0; i < obj.size(); i++)
+            {
+                stream << "\"" << obj.entries[i]->key.escape_chars() << "\": ";
+                write(stream, obj.entries[i]->value, depth + 1);
+                if (i < obj.size() - 1) stream << ',' << new_line() << tab_offset(depth + 1);
+            }
+            stream << new_line() << tab_offset(depth) << "}";
         }
         break;
     case Type::BinaryData:
-        result = "null"; // if you want to work with binary data - use native format, json is only for human-computer comunication
+        stream << "null"; // if you want to work with binary data - use native format, json is only for human-computer comunication
         break;
     }
-
-    return result;
 }
 
-String Compound::Converters::JSON::format_value(const Value& val) const
-{
-    if (val.get_type() == Type::Object) return format(val, 0);
-    else return "{ " + new_line() + "\"root\": " + format(val, 0) + new_line() + " }";
-}
-
-Compound::Object Compound::Converters::JSON::parse_value(const String& str) const
-{
-    reader = TextReader(str);
-    return read_object();
-}
-
-Compound::Value Compound::Converters::JSON::read_value() const
+Compound::Value Compound::Convert::JSON::read_value() const
 {
     const auto ch = reader.peek();
     if (ch == '"')
@@ -182,7 +212,7 @@ Compound::Value Compound::Converters::JSON::read_value() const
     throw ParseException(reader.get_line(), reader.get_column());
 }
 
-void Compound::Converters::JSON::read_null() const
+void Compound::Convert::JSON::read_null() const
 {
     String token;
     while (!reader.is_done() && !space_chars.contains(reader.peek()) && reader.peek() != '}' && reader.peek() != ']' && reader.peek() != ',')
@@ -196,7 +226,7 @@ void Compound::Converters::JSON::read_null() const
     }
 }
 
-String Compound::Converters::JSON::read_string() const
+String Compound::Convert::JSON::read_string() const
 {
     if (reader.get() != '"') throw ParseException(reader.get_line(), reader.get_column());
 
@@ -211,7 +241,7 @@ String Compound::Converters::JSON::read_string() const
 
         if (protect)
         {
-            token += ch;
+            token += String::unescape_char(ch);
             protect = false;
         }
         else
@@ -234,11 +264,14 @@ String Compound::Converters::JSON::read_string() const
     return token;
 }
 
-double Compound::Converters::JSON::read_number() const
+Compound::Value Compound::Convert::JSON::read_number() const
 {
     String token = "";
 
     bool real = false;
+    uint real_size = 0;
+
+    byte stage = 0;
     
     while (true)
     {
@@ -246,10 +279,21 @@ double Compound::Converters::JSON::read_number() const
 
         const char ch = reader.peek();
 
-        if (isdigit(ch) || ch == '.' && !token.contains('.') || (ch == '-' || ch == '+') && token.length() == 0)
+        if (isdigit(ch) || ch == '.' || ch == '-' || ch == '+')
         {
             token += reader.get();
-            if (ch == '.') real = true;
+            if ((ch == '-' || ch == '+') && stage > 0) throw ParseException(reader.get_line(), reader.get_column(), token);
+            if (isdigit(ch))
+            {
+                if (stage == 0 || stage == 2) ++stage;
+                if (real) ++real_size;
+            }
+            if (ch == '.')
+            {
+                if (stage > 1) throw ParseException(reader.get_line(), reader.get_column(), token);
+                real = true;
+                stage = 2;
+            }
         }
         else if (space_chars.contains(ch) || ch == ',' || ch == ']' || ch == '}')
         {
@@ -260,12 +304,29 @@ double Compound::Converters::JSON::read_number() const
             throw ParseException(reader.get_line(), reader.get_column(), token);
         }
     }
-
-    if (real) String::parse<double>(token);
-    return static_cast<double>(String::parse<int64>(token));
+    
+    if (real)
+    {
+        const double number = String::parse<double>(token);
+        double whole;
+        modf(number, &whole);
+        if (number < (double)std::numeric_limits<float>::min() || number > (double)std::numeric_limits<float>::max() || real_size > 7) return number;
+        return float(number);
+    }
+    else
+    {
+        const int64 number = String::parse<int64>(token);
+        if (number > 127 || number < -128)
+            if (number > 32767 || number < -32768)
+                if (number > 2147483647 || number < -2147483648)
+                    return number;
+                else return int32(number);
+            else return short(number);
+        else return char(number);
+    }
 }
 
-bool Compound::Converters::JSON::read_bool() const
+bool Compound::Convert::JSON::read_bool() const
 {
     String token;
     while (!reader.is_done() && !space_chars.contains(reader.peek()) && reader.peek() != '}' && reader.peek() != ']' && reader.peek() != ',')
@@ -283,7 +344,7 @@ bool Compound::Converters::JSON::read_bool() const
     return token == "true";
 }
 
-Compound::Object Compound::Converters::JSON::read_object() const
+Compound::Object Compound::Convert::JSON::read_object() const
 {
     if (reader.get() != '{') throw ParseException(reader.get_line(), reader.get_column());
 
@@ -329,7 +390,7 @@ Compound::Object Compound::Converters::JSON::read_object() const
     return object;
 }
 
-Compound::Array Compound::Converters::JSON::read_array() const
+Compound::Array Compound::Convert::JSON::read_array() const
 {
     if (reader.get() != '[') throw ParseException(reader.get_line(), reader.get_column());
 
@@ -365,6 +426,101 @@ Compound::Array Compound::Converters::JSON::read_array() const
     }
     
     return array;
+}
+
+String Compound::Convert::YAML::format_value(const Value& val) const
+{
+    if (val.get_type() != Type::Object) return "";
+    
+    std::stringstream stream;
+    stream << "---";
+    write(stream, val, 0);
+    return stream.str();
+}
+
+bool Compound::Convert::YAML::write_to(std::ostream& stream, const Value& val) const
+{
+    if (val.get_type() != Type::Object) return false;
+    
+    stream << "---";
+    write(stream, val, 0);
+    return true;
+}
+
+void Compound::Convert::YAML::write(std::ostream& stream, const Value& val, uint depth) const
+{
+    switch (val.get_type())
+    {
+    case Type::Null:
+        stream << "null";
+        break;
+    case Type::String:
+        stream << "\"" + ((String)val).escape_chars() + "\"";
+        break;
+    case Type::Char:
+        stream << val.get_int32();
+        break;
+    case Type::Short:
+        stream << val.get_short();
+        break;
+    case Type::Int32:
+        stream << val.get_int32();
+        break;
+    case Type::Int64:
+        stream << val.get_int64();
+        break;
+    case Type::Bool:
+        stream << ((bool)val ? "true" : "false");
+        break;
+    case Type::Float:
+        {
+            String strf = String::make((float)val);
+            if (!strf.contains('.')) strf += ".0";
+            stream << strf;
+        }
+        break;
+    case Type::Double:
+        {
+            String strd = String::make((double)val);
+            if (!strd.contains('.')) strd += ".0";
+            stream << strd;
+        }
+        break;
+    case Type::Array:
+        if (((Array)val).length() == 0)
+        {
+             stream << "null";
+        }
+        else
+        {
+            const auto arr = val.get_array();
+            for (uint i = 0; i < arr.length(); i++)
+            {
+                stream << "\n";
+                stream << String(' ', depth * 2) << "- ";
+                write(stream, arr[i], depth + 1);
+            }
+        }
+        break;
+    case Type::Object:
+        if (((Object)val).size() == 0)
+        {
+            stream << "null";
+        }
+        else
+        {
+            for (const auto& pair : val.get_object())
+            {
+                stream << "\n";
+                stream << String(' ', depth * 2) << pair->key << ": ";
+                write(stream, pair->value, depth + 1);
+            }
+        }
+        break;
+    case Type::BinaryData:
+        stream << "null"; // if you want to work with binary data - use native format, json is only for human-computer comunication
+        break;
+    }
 }
 
 Compound::Array::Array()
@@ -419,7 +575,7 @@ Shared<Compound::ArrayDiff> Compound::Array::build_diff_against(const Array& bas
 {
     auto diff = MakeShared<ArrayDiff>();
 
-    diff->newLength = base.length();
+    diff->newLength = length();
 
     for (uint i = 0; i < Math::min(length(), base.length()); i++)
     {
@@ -439,15 +595,15 @@ Shared<Compound::ArrayDiff> Compound::Array::build_diff_against(const Array& bas
                 diff->merge[i] = val_diff;
             }
         }
-        else
+        else if (at(i) != base.at(i))
         {
-            diff->set[i] = base.at(i);
+            diff->set[i] = at(i);
         }
     }
 
-    for (uint i = 0; i < base.length(); i++)
+    for (uint i = base.length(); i < length(); i++)
     {
-        diff->set[i] = base.at(i);
+        diff->set[i] = at(i);
     }
     
     return diff;
@@ -468,11 +624,11 @@ void Compound::Array::apply_diff(const Shared<ArrayDiff>& diff)
         val.set_type(merged->value->get_target_type());
         if (merged->value->get_target_type() == Type::Array)
         {
-            ((Array)val).apply_diff(cast<ArrayDiff>(merged->value));
+            val.access_array()->apply_diff(cast<ArrayDiff>(merged->value));
         }
         else if (merged->value->get_target_type() == Type::Object)
         {
-            ((Object)val).apply_diff(cast<ObjectDiff>(merged->value));
+            val.access_object()->apply_diff(cast<ObjectDiff>(merged->value));
         }
     }
 }
@@ -571,7 +727,7 @@ Shared<Compound::ObjectDiff> Compound::Object::build_diff_against(const Object& 
     {
         if (const auto base_entry = base.find(my_entry->key))
         {
-            if (base_entry->get_type() == Type::Object && my_entry->value.get_type() == Type::Object)
+            if (base_entry->get_type() == Type::Array && my_entry->value.get_type() == Type::Array)
             {
                 const auto val_diff = ((Array)my_entry->value).build_diff_against((Array)*base_entry);
                 if (!val_diff->is_empty())
@@ -619,11 +775,11 @@ void Compound::Object::apply_diff(const Shared<ObjectDiff>& diff)
         val.set_type(merged->value->get_target_type());
         if (merged->value->get_target_type() == Type::Array)
         {
-            ((Array)val).apply_diff(cast<ArrayDiff>(merged->value));
+            val.access_array()->apply_diff(cast<ArrayDiff>(merged->value));
         }
         else if (merged->value->get_target_type() == Type::Object)
         {
-            ((Object)val).apply_diff(cast<ObjectDiff>(merged->value));
+            val.access_object()->apply_diff(cast<ObjectDiff>(merged->value));
         }
     }
 }
@@ -830,7 +986,7 @@ Compound::Object& Compound::Object::chain(const String& key, const Object& value
 
 // ----------------------------- Object End
 
-bool Compound::Converter::try_parse_value(const String& str, Object& out_value) const
+bool Compound::Convert::IParser::try_parse_value(const String& str, Value& out_value) const
 {
     try
     {

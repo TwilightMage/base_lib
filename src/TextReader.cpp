@@ -1,4 +1,4 @@
-﻿#include "../include/TextReader.h"
+﻿#include "../include/base_lib/TextReader.h"
 
 TextReader::TextReader()
     : string("")
