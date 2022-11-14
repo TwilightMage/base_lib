@@ -19,9 +19,10 @@
     #define EXPORT
 #endif
 
-#ifndef FORCEINLINE
-#define FORCEINLINE __forceinline
-#endif
+//#ifndef FORCEINLINE
+//#define FORCEINLINE __forceinline
+//#endif
+#define FORCEINLINE
 
 // Platform-specific definitions
 #if PLATFORM_WINDOWS

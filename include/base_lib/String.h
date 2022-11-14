@@ -122,7 +122,7 @@ public:
 		sprintf_s(buffer, size + 1, format.c(), std::forward<Args>(args)...);
 
 		const auto result = String(buffer, size);
-		delete buffer;
+		delete[] buffer;
 		return result;
 	}
 

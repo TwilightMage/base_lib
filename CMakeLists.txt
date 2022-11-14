@@ -9,9 +9,32 @@ function(set_output_directory target)
             )
 endfunction()
 
+function(setup_exe name sources headers)
+    file(GLOB_RECURSE ${name}_SOURCES ${CMAKE_CURRENT_LIST_DIR}/${sources})
+    file(GLOB_RECURSE ${name}_HEADERS ${CMAKE_CURRENT_LIST_DIR}/${headers})
+    add_executable(${name} ${${name}_SOURCES} ${${name}_HEADERS})
+    set_output_directory(${name})
+endfunction()
+
+function(setup_lib name sources headers)
+    file(GLOB_RECURSE ${name}_SOURCES ${CMAKE_CURRENT_LIST_DIR}/${sources})
+    file(GLOB_RECURSE ${name}_HEADERS ${CMAKE_CURRENT_LIST_DIR}/${headers})
+    add_library(${name} ${${name}_SOURCES} ${${name}_HEADERS})
+    set_output_directory(${name})
+endfunction()
+
+function(setup_dll name sources headers)
+    file(GLOB_RECURSE ${name}_SOURCES ${CMAKE_CURRENT_LIST_DIR}/${sources})
+    file(GLOB_RECURSE ${name}_HEADERS ${CMAKE_CURRENT_LIST_DIR}/${headers})
+    add_library(${name} SHARED ${${name}_SOURCES} ${${name}_HEADERS})
+    set_output_directory(${name})
+endfunction()
+
+
+
 project(base_lib)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(DEBUG=1)
@@ -27,20 +50,18 @@ elseif(UNIX AND NOT APPLE)
     add_compile_definitions(PLATFORM_LINUX=1)
 endif()
 
-file(GLOB BASE_LIB_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
-file(GLOB BASE_LIB_HEADERS ${CMAKE_CURRENT_LIST_DIR}/include/base_lib/*.h)
-add_library(base_lib ${BASE_LIB_SOURCES} ${BASE_LIB_HEADERS})
 
+
+#base_lib
+setup_lib(base_lib "src/*.cpp" "include/base_lib/*.h")
+
+target_include_directories(base_lib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 target_include_directories(base_lib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/third_party/include)
 
-set_output_directory(base_lib)
 
-file(GLOB TESTS_SOURCES ${CMAKE_CURRENT_LIST_DIR}/tests/*.cpp)
-file(GLOB TESTS_HEADERS ${CMAKE_CURRENT_LIST_DIR}/tests/*.h)
-add_executable(tests ${TESTS_SOURCES} ${TESTS_HEADERS})
+
+#tests
+setup_exe(tests "tests/*.cpp" "tests/*.h")
 
 add_dependencies(tests base_lib)
-target_include_directories(tests PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 target_link_libraries(tests base_lib)
-
-set_output_directory(tests)
