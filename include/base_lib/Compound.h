@@ -254,8 +254,12 @@ namespace Compound
         {
         public:
             virtual Value parse_value(const String& str) const = 0;
+            Object parse_object(const String& str) const;
+            Array parse_array(const String& str) const;
 
             bool try_parse_value(const String& str, Value& out_value) const;
+            bool try_parse_object(const String& str, Object& out_value) const;
+            bool try_parse_array(const String& str, Array& out_value) const;
         };
 
         class EXPORT IFormatter

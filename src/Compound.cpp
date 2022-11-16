@@ -986,6 +986,16 @@ Compound::Object& Compound::Object::chain(const String& key, const Object& value
 
 // ----------------------------- Object End
 
+Compound::Object Compound::Convert::IParser::parse_object(const String& str) const
+{
+    return parse_value(str).get_object();
+}
+
+Compound::Array Compound::Convert::IParser::parse_array(const String& str) const
+{
+    return parse_value(str).get_array();
+}
+
 bool Compound::Convert::IParser::try_parse_value(const String& str, Value& out_value) const
 {
     try
@@ -995,7 +1005,43 @@ bool Compound::Convert::IParser::try_parse_value(const String& str, Value& out_v
     }
     catch (ParseException&)
     {
+        out_value = Value();
+        return false;
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+bool Compound::Convert::IParser::try_parse_object(const String& str, Object& out_value) const
+{
+    try
+    {
+        out_value = parse_object(str);
+        return true;
+    }
+    catch (ParseException&)
+    {
         out_value = Object();
+        return false;
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+bool Compound::Convert::IParser::try_parse_array(const String& str, Array& out_value) const
+{
+    try
+    {
+        out_value = parse_array(str);
+        return true;
+    }
+    catch (ParseException&)
+    {
+        out_value = Array();
         return false;
     }
     catch (...)
