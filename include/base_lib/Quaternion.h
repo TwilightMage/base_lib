@@ -12,7 +12,7 @@ public:
     Quaternion(const Quaternion& rhs);
     Quaternion(const Vector3& euler);
 
-    FORCEINLINE float magnitude() const;
+    float magnitude() const;
     Vector3 rotate_vector3(const Vector3& rhs) const;
     Vector3 forward() const;
     Vector3 right() const;

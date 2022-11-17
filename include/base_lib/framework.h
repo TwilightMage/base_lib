@@ -19,11 +19,6 @@
     #define EXPORT
 #endif
 
-//#ifndef FORCEINLINE
-//#define FORCEINLINE __forceinline
-//#endif
-#define FORCEINLINE
-
 // Platform-specific definitions
 #if PLATFORM_WINDOWS
     #define WIN32_LEAN_AND_MEAN
@@ -54,7 +49,7 @@
 // memcpy   - when you move data backward: 0000xxxx0000 -> 00xxxx000000
 // memcpy_b - when you move data forward:  0000xxxx0000 -> 000000xxxx00
 // Same as memcpy, but works in reverse order
-FORCEINLINE void memcpy_b(void* dst, void* src, size_t size)
+inline void memcpy_b(void* dst, void* src, size_t size)
 {
     auto _dst = static_cast<byte*>(dst);
     auto _src = static_cast<byte*>(src);
@@ -67,7 +62,7 @@ FORCEINLINE void memcpy_b(void* dst, void* src, size_t size)
 
 /** Reinterpret object, use when you know what you're doing */
 template<typename To, typename From>
-FORCEINLINE To& cast_object(From& rhs)
+To& cast_object(From& rhs)
 {
 	static_assert(sizeof(To) == sizeof(From), "Types have different size");
 	return *reinterpret_cast<To*>(&rhs);
@@ -75,7 +70,7 @@ FORCEINLINE To& cast_object(From& rhs)
 
 /** Reinterpret object, use when you know what you're doing */
 template<typename To, typename From>
-FORCEINLINE const To& cast_object(const From& rhs)
+const To& cast_object(const From& rhs)
 {
 	static_assert(sizeof(To) == sizeof(From), "Types have different size");
 	return *reinterpret_cast<const To*>(&rhs);
@@ -83,21 +78,21 @@ FORCEINLINE const To& cast_object(const From& rhs)
 
 /** Reinterpret object without size check, use when you really know what you're doing */
 template<typename To, typename From>
-FORCEINLINE To& cast_object_unsafe(From& rhs)
+To& cast_object_unsafe(From& rhs)
 {
 	return *reinterpret_cast<To*>(&rhs);
 }
 
 /** Reinterpret object without size check, use when you really know what you're doing */
 template<typename To, typename From>
-FORCEINLINE const To& cast_object_unsafe(const From& rhs)
+const To& cast_object_unsafe(const From& rhs)
 {
 	return *reinterpret_cast<const To*>(&rhs);
 }
 
 /** Access any member only by it's byte offset */
 template<typename MemberType, typename ObjectType>
-FORCEINLINE MemberType* hack_member(ObjectType* obj, uint byte_offset)
+MemberType* hack_member(ObjectType* obj, uint byte_offset)
 {
 	return reinterpret_cast<MemberType*>(reinterpret_cast<byte*>(obj) + byte_offset);
 }

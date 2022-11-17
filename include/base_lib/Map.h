@@ -22,7 +22,7 @@ public:
         }
     }
     
-    FORCEINLINE void insert(const Key& key, const Value& new_value)
+    void insert(const Key& key, const Value& new_value)
     {
         data_.insert(key, new_value);
     }
@@ -49,12 +49,12 @@ public:
         return *data_.find(key);
     }
 
-    FORCEINLINE Value& operator[](const Key& key)
+    Value& operator[](const Key& key)
     {
         return at(key);
     }
 
-    FORCEINLINE const Value& operator[](const Key& key) const
+    const Value& operator[](const Key& key) const
     {
         return at(key);
     }
@@ -80,22 +80,22 @@ public:
         throw std::runtime_error("Unable to find value in map");
     }
 
-    FORCEINLINE bool contains(const Key& key) const
+    bool contains(const Key& key) const
     {
         return data_.find(key) != nullptr;
     }
 
-    FORCEINLINE void remove(const Key& key)
+    void remove(const Key& key)
     {
         data_.remove(key);
     }
 
-    FORCEINLINE void clear()
+    void clear()
     {
         data_.clear();
     }
 
-    FORCEINLINE Value* find(const Key& key) const
+    Value* find(const Key& key) const
     {
         return data_.find(key);
     }
@@ -146,17 +146,17 @@ public:
         return result;
     }
 
-    FORCEINLINE uint size() const
+    uint size() const
     {
         return data_.size();
     }
 
-    FORCEINLINE typename Tree1D<Key, Value>::Iterator begin() const
+    typename Tree1D<Key, Value>::Iterator begin() const
     {
         return data_.begin();
     }
 
-    FORCEINLINE typename Tree1D<Key, Value>::Iterator end() const
+    typename Tree1D<Key, Value>::Iterator end() const
     {
         return data_.end();
     }

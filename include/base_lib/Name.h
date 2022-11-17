@@ -2,7 +2,6 @@
 
 #include "BasicTypes.h"
 #include "FastOperator.h"
-#include "Map.h"
 #include "String.h"
 
 class EXPORT Name : public ISerializable, public IConvertible<String>
@@ -14,7 +13,7 @@ public:
     explicit Name(const String& str);
     ~Name();
 
-    FORCEINLINE const char* c() const;
+    const char* c() const;
 
     FAST_OPERATOR(Name, ==, hash_)
     FAST_OPERATOR(Name, <=, hash_)
@@ -25,9 +24,9 @@ public:
 
     Name& operator=(const Name& rhs);
 
-    FORCEINLINE String to_string() const { return String(data_, size_); }
+    String to_string() const { return String(data_, size_); }
 
-    FORCEINLINE bool is_valid() const { return hash_ != 0; }
+    bool is_valid() const { return hash_ != 0; }
 
     void write_to_stream(std::ostream& stream) const override;
     void read_from_stream(std::istream& stream) override;

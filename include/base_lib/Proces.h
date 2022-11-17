@@ -30,7 +30,7 @@ public:
     bool is_alive() const;
     void wait();
     void stop();
-    FORCEINLINE ErrorType get_error() const { return dataBlock->error; }
+    ErrorType get_error() const { return dataBlock->error; }
 
     String read_new_output();
     String read_new_errors();
@@ -54,7 +54,7 @@ private:
         bool isValid;
     };
 
-    FORCEINLINE bool is_valid() const { return dataBlock != nullptr && dataBlock->isValid && dataBlock->error == ErrorType::None; }
+    bool is_valid() const { return dataBlock != nullptr && dataBlock->isValid && dataBlock->error == ErrorType::None; }
     
     Shared<DataBlock> dataBlock;
 };

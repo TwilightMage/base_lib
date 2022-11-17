@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include "base_lib/Regex.h"
+#include "base_lib/Logger.h"
 
 Path Path::app_path = Path();
 

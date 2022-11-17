@@ -114,7 +114,7 @@ public:
 
     template<typename To>
     requires std::is_convertible<T*, To*>::value
-    FORCEINLINE operator Shared<To>() const
+    operator Shared<To>() const
     {
         return Shared<To>(ptr_, mem_block_);
     }
@@ -148,20 +148,20 @@ public:
         mem_block_ = nullptr;
     }
 
-    FORCEINLINE T* get() const { return ptr_; }
+    T* get() const { return ptr_; }
 
-    FORCEINLINE T& operator*() { return *ptr_; }
-    FORCEINLINE const T& operator*() const { return *ptr_; }
+    T& operator*() { return *ptr_; }
+    const T& operator*() const { return *ptr_; }
 
-    FORCEINLINE T* operator->() { return ptr_; }
-    FORCEINLINE T* operator->() const { return ptr_; }
+    T* operator->() { return ptr_; }
+    T* operator->() const { return ptr_; }
 
-    FORCEINLINE bool operator==(nullptr_t) const { return ptr_ == nullptr; }
-    FORCEINLINE bool operator!=(nullptr_t) const { return ptr_ != nullptr; }
-    FORCEINLINE operator bool() const { return ptr_; }
+    bool operator==(nullptr_t) const { return ptr_ == nullptr; }
+    bool operator!=(nullptr_t) const { return ptr_ != nullptr; }
+    operator bool() const { return ptr_; }
 
     template<typename T1>
-    FORCEINLINE static Shared<T1> cast_to(const Shared& from)
+    static Shared<T1> cast_to(const Shared& from)
     {
         if (T1* casted = dynamic_cast<T1*>(from.get()))
         {
@@ -172,7 +172,7 @@ public:
     }
     
 private:
-    FORCEINLINE void decref() const
+    void decref() const
     {
         if (--(*mem_block_).shared_references == 0)
         {
@@ -181,7 +181,7 @@ private:
         }
     }
 
-    FORCEINLINE void incref() const
+    void incref() const
     {
         ++(*mem_block_).shared_references;
     }
@@ -191,7 +191,7 @@ private:
 };
 
 template<class T, class... ArgTypes>
-FORCEINLINE Shared<T> MakeShared(ArgTypes&&... Args)
+Shared<T> MakeShared(ArgTypes&&... Args)
 {
     return Shared<T>(new T(std::forward<ArgTypes>(Args)...));
 }
@@ -233,7 +233,7 @@ public:
 
     template<typename To>
     requires std::is_convertible<T*, To*>::value
-    FORCEINLINE operator Weak<To>() const
+    operator Weak<To>() const
     {
         return Weak<To>(ptr_, mem_block_);
     }
@@ -271,12 +271,12 @@ public:
         return *this;
     }
 
-    FORCEINLINE Shared<T> lock() const
+    Shared<T> lock() const
     {
         return ptr_ && mem_block_->shared_references > 0 ? Shared<T>(ptr_, mem_block_) : nullptr;
     }
 
-    FORCEINLINE void reset()
+    void reset()
     {
         if (ptr_)
         {
@@ -287,20 +287,20 @@ public:
         mem_block_ = nullptr;
     }
 
-    FORCEINLINE T* get() const { return ptr_; }
+    T* get() const { return ptr_; }
 
-    FORCEINLINE T& operator*() { return *ptr_; }
-    FORCEINLINE const T& operator*() const { return *ptr_; }
+    T& operator*() { return *ptr_; }
+    const T& operator*() const { return *ptr_; }
 
-    FORCEINLINE T& operator->() { return *ptr_; }
-    FORCEINLINE const T& operator->() const { return *ptr_; }
+    T& operator->() { return *ptr_; }
+    const T& operator->() const { return *ptr_; }
 
-    FORCEINLINE bool operator==(nullptr_t) const { return ptr_ == nullptr; }
-    FORCEINLINE bool operator!=(nullptr_t) const { return ptr_ != nullptr; }
-    FORCEINLINE operator bool() const { return ptr_; }
+    bool operator==(nullptr_t) const { return ptr_ == nullptr; }
+    bool operator!=(nullptr_t) const { return ptr_ != nullptr; }
+    operator bool() const { return ptr_; }
 
 private:
-    FORCEINLINE void decref() const
+    void decref() const
     {
         if (--(*mem_block_).weak_references == 0 && (*mem_block_).shared_references == 0)
         {
@@ -308,7 +308,7 @@ private:
         }
     }
     
-    FORCEINLINE void incref() const
+    void incref() const
     {
         ++(*mem_block_).weak_references;
     }
@@ -340,18 +340,18 @@ public:
         ptr_ = ptr;
     }
 
-    FORCEINLINE void free()
+    void free()
     {
         ptr_ = nullptr;
     }
 
-    FORCEINLINE T* get() const { return ptr_; }
+    T* get() const { return ptr_; }
 
-    FORCEINLINE T& operator*() { return *ptr_; }
-    FORCEINLINE const T& operator*() const { return *ptr_; }
+    T& operator*() { return *ptr_; }
+    const T& operator*() const { return *ptr_; }
 
-    FORCEINLINE T* operator->() { return ptr_; }
-    FORCEINLINE T* operator->() const { return ptr_; }
+    T* operator->() { return ptr_; }
+    T* operator->() const { return ptr_; }
 
 private:
     T* ptr_;
@@ -372,65 +372,65 @@ Weak<T> EnableSharedFromThis<T>::weak_from_this() const
 }
 
 template<typename To, typename From>
-FORCEINLINE To* cast(From* obj)
+To* cast(From* obj)
 {
     return dynamic_cast<To*>(obj);
 }
 
 template<typename To, typename From>
-FORCEINLINE Shared<To> cast(const Shared<From>& obj)
+Shared<To> cast(const Shared<From>& obj)
 {
     return Shared<From>::template cast_to<To>(obj);
 }
 
 template<typename To, typename From>
-FORCEINLINE Shared<const To> cast(const Shared<const From>& obj)
+Shared<const To> cast(const Shared<const From>& obj)
 {
     return Shared<const From>::template cast_to<const To>(obj);
 }
 
 template<typename To, typename From>
-FORCEINLINE Shared<To> cast(const Weak<From>& obj)
+Shared<To> cast(const Weak<From>& obj)
 {
     return Shared<From>::template cast_to<To>(obj.lock());
 }
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator==(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() == rhs.get(); };
+bool operator==(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() == rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator<=(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() <= rhs.get(); };
+bool operator<=(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() <= rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator<(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() < rhs.get(); };
+bool operator<(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() < rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator!=(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() != rhs.get(); };
+bool operator!=(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() != rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator>(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() > rhs.get(); };
+bool operator>(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() > rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator>=(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() >= rhs.get(); };
+bool operator>=(const Shared<T1>& lhs, const Shared<T2>& rhs) { return lhs.get() >= rhs.get(); };
 
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator==(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() == rhs.get(); };
+bool operator==(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() == rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator<=(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() <= rhs.get(); };
+bool operator<=(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() <= rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator<(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() < rhs.get(); };
+bool operator<(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() < rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator!=(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() != rhs.get(); };
+bool operator!=(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() != rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator>(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() > rhs.get(); };
+bool operator>(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() > rhs.get(); };
 
 template<typename T1, typename T2>
-FORCEINLINE bool operator>=(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() >= rhs.get(); };
+bool operator>=(const Weak<T1>& lhs, const Weak<T2>& rhs) { return lhs.get() >= rhs.get(); };
 
 #define null_weak(type) (nullptr)
 
@@ -461,31 +461,31 @@ template<typename T>
 using EnableSharedFromThis = std::enable_shared_from_this<T>;
 
 template<typename To, typename From>
-FORCEINLINE To* cast(From* obj)
+To* cast(From* obj)
 {
     return dynamic_cast<To*>(obj);
 }
 
 template<typename To, typename From>
-FORCEINLINE To const* cast(From const* obj)
+To const* cast(From const* obj)
 {
     return dynamic_cast<To const*>(obj);
 }
 
 template<typename To, typename From>
-FORCEINLINE Shared<To> cast(const Shared<From>& obj)
+Shared<To> cast(const Shared<From>& obj)
 {
     return std::dynamic_pointer_cast<To>(obj);
 }
 
 template<typename To, typename From>
-FORCEINLINE Shared<const To> cast(const Shared<const From>& obj)
+Shared<const To> cast(const Shared<const From>& obj)
 {
     return std::dynamic_pointer_cast<const To>(obj);
 }
 
 template<typename To, typename From>
-FORCEINLINE Shared<To> cast(const Weak<From>& obj)
+Shared<To> cast(const Weak<From>& obj)
 {
     return std::dynamic_pointer_cast<To>(obj.lock());
 }

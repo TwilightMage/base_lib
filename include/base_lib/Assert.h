@@ -36,7 +36,7 @@
 #endif
 
 template<typename... T>
-FORCEINLINE bool CheckImpl(bool condition, const String& category, const String& error_message_format, T... params)
+bool CheckImpl(bool condition, const String& category, const String& error_message_format, T... params)
 {
     if (!condition)
     {
@@ -47,7 +47,7 @@ FORCEINLINE bool CheckImpl(bool condition, const String& category, const String&
 #define Check(condition, category, error_message_format, ...) CheckImpl((condition), category, error_message_format, __VA_ARGS__)
 
 template<typename... T>
-FORCEINLINE bool CheckErrorImpl(bool condition, const String& category, const String& error_message_format, T... params)
+bool CheckErrorImpl(bool condition, const String& category, const String& error_message_format, T... params)
 {
     if (!condition)
     {

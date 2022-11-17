@@ -8,7 +8,7 @@ typedef std::chrono::duration<long long, std::ratio<1, 1000000000>> dur_nano;
 typedef std::chrono::time_point<std::chrono::system_clock> time_point;
 
 template<typename... TimePointTypes>
-FORCEINLINE void measure_time_all_impl(List<dur_nano>& intervals, TimePointTypes... time_points)
+void measure_time_all_impl(List<dur_nano>& intervals, TimePointTypes... time_points)
 {
     List<time_point> time_points_list = {time_points...};
     for (uint i = 0; i < sizeof...(time_points) - 1; i++)
@@ -17,7 +17,7 @@ FORCEINLINE void measure_time_all_impl(List<dur_nano>& intervals, TimePointTypes
     }
 }
 
-FORCEINLINE void measure_time_markers_impl(List<dur_nano>& intervals, List<time_point> time_points, uint& time_total)
+void measure_time_markers_impl(List<dur_nano>& intervals, List<time_point> time_points, uint& time_total)
 {
     for (uint i = 0; i < time_points.length() - 1; i++)
     {

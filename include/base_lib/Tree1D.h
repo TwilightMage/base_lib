@@ -144,7 +144,7 @@ public:
     };
 
 private:
-    FORCEINLINE static void rotation_ll(Node*& node)
+    static void rotation_ll(Node*& node)
     {
         auto l_temp = node->left;
         auto lr_temp = l_temp->right;
@@ -157,7 +157,7 @@ private:
         node->update_h();
     }
 
-    FORCEINLINE static void rotation_rr(Node*& node)
+    static void rotation_rr(Node*& node)
     {
         auto r_temp = node->right;
         auto rl_temp = node->right->left;
@@ -170,7 +170,7 @@ private:
         node->update_h();
     }
 
-    FORCEINLINE static void rotation_rl(Node*& node)
+    static void rotation_rl(Node*& node)
     {
         auto rl_temp = node->right->left;
         auto rll_temp = node->right->left->left;
@@ -194,7 +194,7 @@ private:
         node->update_h();
     }
     
-    FORCEINLINE static void rotation_lr(Node*& node)
+    static void rotation_lr(Node*& node)
     {
         auto lr_temp = node->left->right;
         auto lrr_temp = node->left->right->right;
@@ -218,7 +218,7 @@ private:
         node->update_h();
     }
 
-    FORCEINLINE static int bf(Node* node)
+    static int bf(Node* node)
     {
         if (node)
         {
@@ -228,7 +228,7 @@ private:
         return 0;
     }
     
-    FORCEINLINE static void balance(Node*& node)
+    static void balance(Node*& node)
     {
         auto bfs = bf(node);
         auto bfl = bf(node->left);
@@ -274,7 +274,7 @@ private:
         }
     }
 
-    FORCEINLINE static Node* take_most_right(Node*& node)
+    static Node* take_most_right(Node*& node)
     {
         if (!node->right)
         {
@@ -287,7 +287,7 @@ private:
         return take_most_right(node->right);
     }
 
-    FORCEINLINE static Node* take_most_left(Node*& node)
+    static Node* take_most_left(Node*& node)
     {
         if (!node->left)
         {

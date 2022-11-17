@@ -16,14 +16,14 @@ public:
     Vector2(const Vector3& rhs);
     Vector2(const Vector2& rhs);
 
-    FORCEINLINE float magnitude() const;
-    FORCEINLINE float dot_product(const Vector2& rhs) const;
+    float magnitude() const;
+    float dot_product(const Vector2& rhs) const;
     Vector2 normalized() const;
     void normalize();
-    FORCEINLINE String to_string() const;
+    String to_string() const;
     
     static float angle_global(const Vector2& from, const Vector2& to);
-    FORCEINLINE static float distance(const Vector2& a, const Vector2& b) { return (a - b).magnitude(); }
+    static float distance(const Vector2& a, const Vector2& b) { return (a - b).magnitude(); }
 
     Vector2 operator+(const Vector2& rhs) const;
     Vector2 operator-(const Vector2& rhs) const;
@@ -50,8 +50,8 @@ public:
     float x;
     float y;
 
-    FORCEINLINE static Vector2 zero();
-    FORCEINLINE static Vector2 one();
-    FORCEINLINE static Vector2 right();
-    FORCEINLINE static Vector2 up();
+    static Vector2 zero();
+    static Vector2 one();
+    static Vector2 right();
+    static Vector2 up();
 };

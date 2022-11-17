@@ -428,17 +428,17 @@ public:
         return result;
     }
     
-    FORCEINLINE ValueType& operator[](uint index)
+    ValueType& operator[](uint index)
     {
         return at(index);
     }
 
-    FORCEINLINE const ValueType& operator[](uint index) const
+    const ValueType& operator[](uint index) const
     {
         return at(index);
     }
 
-    FORCEINLINE ValueType& at(uint index)
+    ValueType& at(uint index)
     {
         if (index >= length_)
         {
@@ -448,7 +448,7 @@ public:
         return inner_[index];
     }
 
-    FORCEINLINE const ValueType& at(uint index) const
+    const ValueType& at(uint index) const
     {
         if (index >= length_)
         {
@@ -458,52 +458,52 @@ public:
         return inner_[index];
     }
 
-    FORCEINLINE ValueType& first()
+    ValueType& first()
     {
         return operator[](0);
     }
 
-    FORCEINLINE const ValueType& first() const
+    const ValueType& first() const
     {
         return operator[](0);
     }
 
-    FORCEINLINE ValueType first_or_default()
+    ValueType first_or_default()
     {
         return length_ > 0 ? operator[](0) : ValueType();
     }
 
-    FORCEINLINE ValueType& first_or_default(ValueType& defaultValue)
+    ValueType& first_or_default(ValueType& defaultValue)
     {
         return length_ > 0 ? operator[](0) : defaultValue;
     }
 
-    FORCEINLINE const ValueType& first_or_default(const ValueType& defaultValue) const
+    const ValueType& first_or_default(const ValueType& defaultValue) const
     {
         return length_ > 0 ? operator[](0) : defaultValue;
     }
     
-    FORCEINLINE ValueType& last()
+    ValueType& last()
     {
         return operator[](length_ - 1);
     }
 
-    FORCEINLINE const ValueType& last() const
+    const ValueType& last() const
     {
         return operator[](length_ - 1);
     }
 
-    FORCEINLINE ValueType last_or_default()
+    ValueType last_or_default()
     {
         return length_ > 0 ? operator[](length_ - 1) : ValueType();
     }
 
-    FORCEINLINE ValueType& last_or_default(ValueType& defaultValue)
+    ValueType& last_or_default(ValueType& defaultValue)
     {
         return length_ > 0 ? operator[](length_ - 1) : defaultValue;
     }
 
-    FORCEINLINE const ValueType& last_or_default(const ValueType& defaultValue) const
+    const ValueType& last_or_default(const ValueType& defaultValue) const
     {
         return length_ > 0 ? operator[](length_ - 1) : defaultValue;
     }

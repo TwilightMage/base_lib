@@ -92,8 +92,8 @@ namespace Compound
     class ArrayDiff : public IDiff
     {
     public:
-        FORCEINLINE bool is_empty() const override { return set.size() == 0 && merge.size() == 0; }
-        FORCEINLINE Type get_target_type() const override { return Type::Array; }
+        bool is_empty() const override { return set.size() == 0 && merge.size() == 0; }
+        Type get_target_type() const override { return Type::Array; }
         
         uint newLength;
         SimpleMap<uint, Value> set;
@@ -103,8 +103,8 @@ namespace Compound
     class ObjectDiff : public IDiff
     {
     public:
-        FORCEINLINE bool is_empty() const override { return remove.length() == 0 && set.size() == 0 && merge.size() == 0; }
-        FORCEINLINE Type get_target_type() const override { return Type::Object; }
+        bool is_empty() const override { return remove.length() == 0 && set.size() == 0 && merge.size() == 0; }
+        Type get_target_type() const override { return Type::Object; }
         
         List<String> remove;
         SimpleMap<String, Value> set;
@@ -286,8 +286,8 @@ namespace Compound
 
         private:
             void write(std::ostream& stream, const Value& val, uint depth) const;
-            FORCEINLINE String tab_offset(uint depth) const { return pretty ? String(' ', depth * 2) : ""; }
-            FORCEINLINE const String new_line() const { return pretty ? "\n" : ""; }
+            String tab_offset(uint depth) const { return pretty ? String(' ', depth * 2) : ""; }
+            const String new_line() const { return pretty ? "\n" : ""; }
 
             Value read_value() const;
             void read_null() const;
@@ -549,10 +549,10 @@ namespace Compound
 
         String to_string() const;
 
-        FORCEINLINE const void* get_data_block() const { return data; }
-        FORCEINLINE Type get_type() const { return type; }
-        FORCEINLINE bool is_number() const { return 1 << (int)type & numeric_type_mask; }
-        FORCEINLINE uint64 get_binary_type_size() const { return binary_type_size; }
+        const void* get_data_block() const { return data; }
+        Type get_type() const { return type; }
+        bool is_number() const { return 1 << (int)type & numeric_type_mask; }
+        uint64 get_binary_type_size() const { return binary_type_size; }
 
     private:
         void create_data();
@@ -578,20 +578,20 @@ namespace Compound
         void set_binary_internal(const void* chars, uint64 size);
 
         template<typename T>
-        FORCEINLINE T& get_data()
+        T& get_data()
         {
             return *(T*)data;
         }
 
         template<typename T>
-        FORCEINLINE const T& get_data() const
+        const T& get_data() const
         {
             return *(T*)data;
         }
 
         template<typename T>
         requires std::is_arithmetic<T>::value
-        FORCEINLINE T get_data_numeric() const
+        T get_data_numeric() const
         {
             switch (type)
             {

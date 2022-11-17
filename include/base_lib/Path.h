@@ -28,7 +28,7 @@ public:
     explicit Path(const char* str);
 
 	static void init(const String& executablePath);
-	FORCEINLINE static const Path& get_app_path() { return app_path; }
+	static const Path& get_app_path() { return app_path; }
 
     bool exists() const;
 	bool is_global() const;

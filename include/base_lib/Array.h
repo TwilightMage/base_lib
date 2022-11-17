@@ -12,42 +12,42 @@ public:
         delete[] inner_;
     }
 
-    FORCEINLINE const ValueType* begin() const
+    const ValueType* begin() const
     {
         return inner_;
     }
 
-    FORCEINLINE const ValueType* end() const
+    const ValueType* end() const
     {
         return inner_ + length_;
     }
 
-    FORCEINLINE ValueType* begin()
+    ValueType* begin()
     {
         return inner_;
     }
 
-    FORCEINLINE ValueType* end()
+    ValueType* end()
     {
         return inner_ + length_;
     }
 
-    FORCEINLINE [[nodiscard]] uint length() const
+    [[nodiscard]] uint length() const
     {
         return length_;
     }
 
-    FORCEINLINE ValueType* get_data()
+    ValueType* get_data()
     {
         return inner_;
     }
 
-    FORCEINLINE const ValueType* get_data() const
+    const ValueType* get_data() const
     {
         return inner_;
     }
 
-    FORCEINLINE bool operator==(const Array& rhs) const
+    bool operator==(const Array& rhs) const
     {
         if (length_ != rhs.length_) return false;
 
@@ -59,7 +59,7 @@ public:
         return true;
     }
 
-    FORCEINLINE bool operator!=(const Array& rhs) const
+    bool operator!=(const Array& rhs) const
     {
         return !operator==(rhs);
     }

@@ -32,7 +32,7 @@ template<typename T>
 using Shared = std::shared_ptr<T>;
 
 template<class T, class... Types>
-__forceinline Shared<T> MakeShared(Types&&... Args)
+__Shared<T> MakeShared(Types&&... Args)
 {
 	return std::make_shared<T>(std::forward<Types>(Args)...);
 }*/

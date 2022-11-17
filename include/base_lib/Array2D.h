@@ -136,22 +136,22 @@ public:
         return data_[y * size_x_ + x];
     }
 
-    FORCEINLINE uint get_size_x() const
+    uint get_size_x() const
     {
         return size_x_;
     }
 
-    FORCEINLINE uint get_size_y() const
+    uint get_size_y() const
     {
         return size_y_;
     }
 
-    FORCEINLINE uint size() const
+    uint size() const
     {
         return size_x_ * size_y_;
     }
 
-    FORCEINLINE List<T> to_list() const
+    List<T> to_list() const
     {
         return size() > 0 ? List<T>(data_, size_x_ * size_y_) : List<T>();
     }

@@ -26,8 +26,8 @@ public:
 
 	~String();
 
-	FORCEINLINE std::string std() const;
-	FORCEINLINE const char* c() const;
+	std::string std() const;
+	const char* c() const;
 	// return the copy of inner string
 	// may cause memory leak if you are not careful
 	char* c_copy() const;
@@ -43,8 +43,8 @@ public:
 	void write_to_stream(std::ostream& stream) const override;
 	void read_from_stream(std::istream& stream) override;;
 
-	FORCEINLINE uint length() const;
-	FORCEINLINE uint allocated_length() const;
+	uint length() const;
+	uint allocated_length() const;
 	int index_of(const String& substr) const;
 	int last_index_of(const String& substr) const;
 	int index_of_char(const String& chars) const;

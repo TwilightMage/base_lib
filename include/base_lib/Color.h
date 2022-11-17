@@ -14,8 +14,8 @@ public:
     Color(byte r, byte g, byte b);
     Color(byte r, byte g, byte b, byte a);
     
-    FORCEINLINE Vector3 to_vector3() const;
-    FORCEINLINE Quaternion to_quaternion() const;
+    Vector3 to_vector3() const;
+    Quaternion to_quaternion() const;
     String to_string() const;
     
     void convert_to(Compound::Object& to) const;
@@ -26,14 +26,14 @@ public:
     byte b;
     byte a;
 
-    FORCEINLINE static Color white()       { return {255, 255, 255, 255}; }
-    FORCEINLINE static Color grey()        { return {127, 127, 127, 255}; }
-    FORCEINLINE static Color black()       { return {0,   0,   0,   255}; }
-    FORCEINLINE static Color red()         { return {255, 0,   0,   255}; }
-    FORCEINLINE static Color green()       { return {0,   255, 0,   255}; }
-    FORCEINLINE static Color blue()        { return {0,   0,   255, 255}; }
-    FORCEINLINE static Color cyan()        { return {0,   255, 255, 255}; }
-    FORCEINLINE static Color purple()      { return {255, 0,   255, 255}; }
-    FORCEINLINE static Color yellow()      { return {255, 255, 0,   255}; }
-    FORCEINLINE static Color transparent() { return {255, 255, 255, 0  }; }
+    static Color white()       { return {255, 255, 255, 255}; }
+    static Color grey()        { return {127, 127, 127, 255}; }
+    static Color black()       { return {0,   0,   0,   255}; }
+    static Color red()         { return {255, 0,   0,   255}; }
+    static Color green()       { return {0,   255, 0,   255}; }
+    static Color blue()        { return {0,   0,   255, 255}; }
+    static Color cyan()        { return {0,   255, 255, 255}; }
+    static Color purple()      { return {255, 0,   255, 255}; }
+    static Color yellow()      { return {255, 255, 0,   255}; }
+    static Color transparent() { return {255, 255, 255, 0  }; }
 };

@@ -36,48 +36,48 @@ struct SimpleMap
         }
     }
 
-    FORCEINLINE SimpleMap copy() const
+    SimpleMap copy() const
     {
         return *this;
     }
     
-    FORCEINLINE V& operator[](const K& key)
+    V& operator[](const K& key)
     {
         return at(key);
     }
 
-    FORCEINLINE const V& operator[](const K& key) const
+    const V& operator[](const K& key) const
     {
         return at(key);
     }
 
-    FORCEINLINE void clear()
+    void clear()
     {
         /*for (uint i = 0; i < entries.length(); i++) delete entries[i];*/
         entries.clear();
     }
 
-    FORCEINLINE Pair<K, V>** begin()
+    Pair<K, V>** begin()
     {
         return entries.begin();
     }
 
-    FORCEINLINE Pair<K, V>** end()
+    Pair<K, V>** end()
     {
         return entries.end();
     }
 
-    FORCEINLINE const Pair<K, V>* const* begin() const
+    const Pair<K, V>* const* begin() const
     {
         return entries.begin();
     }
 
-    FORCEINLINE const Pair<K, V>* const* end() const
+    const Pair<K, V>* const* end() const
     {
         return entries.end();
     }
 
-    FORCEINLINE uint size() const
+    uint size() const
     {
         return entries.length();
     }
