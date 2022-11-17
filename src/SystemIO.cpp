@@ -1,7 +1,7 @@
-﻿#include "../include/base_lib/SystemIO.h"
+﻿#include "base_lib/SystemIO.h"
 
-#include "../include/base_lib/framework.h"
-#include "../include/base_lib/Math.h"
+#include "base_lib/framework.h"
+#include "base_lib/Math.h"
 
 #if PLATFORM_WINDOWS
 #include <commdlg.h>

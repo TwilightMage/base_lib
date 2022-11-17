@@ -1,8 +1,8 @@
-#include "../include/base_lib/Path.h"
+#include "base_lib/Path.h"
 
 #include <filesystem>
 
-#include "../include/base_lib/Regex.h"
+#include "base_lib/Regex.h"
 
 Path Path::app_path = Path();
 

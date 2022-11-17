@@ -1,8 +1,8 @@
 ﻿#include <process.h>
 
-#include "../include/base_lib/Map.h"
-#include "../include/base_lib/Path.h"
-#include "../include/base_lib/Proces.h"
+#include "base_lib/Map.h"
+#include "base_lib/Path.h"
+#include "base_lib/Proces.h"
 
 Process::Process()
     : dataBlock(nullptr)

@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "FastOperator.h"
 
 template<typename K, typename V>

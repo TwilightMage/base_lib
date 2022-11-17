@@ -1,12 +1,10 @@
-#include "../include/base_lib/stb.h"
+#include "base_lib/stb.h"
 
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb/stb_image_write.h>
-
-#include "../include/base_lib/Map.h"
 
 Array2D<Color> stb::load(const Path& path, uint& out_width, uint& out_height)
 {

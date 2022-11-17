@@ -1,10 +1,10 @@
-#include "../include/base_lib/String.h"
+#include "base_lib/String.h"
 
-#include "../include/base_lib/BasicTypes.h"
-#include "../include/base_lib/framework.h"
-#include "../include/base_lib/Math.h"
-#include "../include/base_lib/Name.h"
-#include "../include/base_lib/StreamUtils.h"
+#include "base_lib/BasicTypes.h"
+#include "base_lib/framework.h"
+#include "base_lib/Math.h"
+#include "base_lib/Name.h"
+#include "base_lib/StreamUtils.h"
 
 String::String()
 	: inner_(new char('\0'))

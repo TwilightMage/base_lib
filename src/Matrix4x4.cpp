@@ -1,8 +1,8 @@
-﻿#include "../include/base_lib/Matrix4x4.h"
+﻿#include "base_lib/Matrix4x4.h"
 
 #include <glm/ext/matrix_transform.hpp>
 
-#include "../include/base_lib/Math.h"
+#include "base_lib/Math.h"
 
 Matrix4x4::Matrix4x4()
     : Matrix4x4(1.0f)

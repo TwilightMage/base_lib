@@ -1,4 +1,4 @@
-﻿#include "../include/base_lib/Version.h"
+﻿#include "base_lib/Version.h"
 
 Version::Version()
     : version_number(0)

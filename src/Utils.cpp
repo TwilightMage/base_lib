@@ -1,10 +1,10 @@
-﻿#include "../include/base_lib/Utils.h"
+﻿#include "base_lib/Utils.h"
 
 #define GLFW_INCLUDE_NONE
 #include <algorithm>
 
-#include "../include/base_lib/Logger.h"
-#include "../include/base_lib/Path.h"
+#include "base_lib/Logger.h"
+#include "base_lib/Path.h"
 
 #if PLATFORM_WINDOWS
 #include <dbghelp.h>

@@ -1,8 +1,8 @@
-#include "../include/base_lib/LogStream.h"
+#include "base_lib/LogStream.h"
 
 #include <iostream>
 
-#include "../include/base_lib/Path.h"
+#include "base_lib/Path.h"
 
 LogStream::LogStream(const DateTime& log_start_time, const Path& root)
 	: std::ostream(&tbuf_)

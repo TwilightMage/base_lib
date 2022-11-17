@@ -1,4 +1,4 @@
-﻿#include "../include/base_lib/Quaternion.h"
+﻿#include "base_lib/Quaternion.h"
 
 #include <glm/detail/type_quat.hpp>
 #include <glm/gtc/quaternion.hpp>

@@ -1,4 +1,4 @@
-﻿#include "../include/base_lib/Name.h"
+﻿#include "base_lib/Name.h"
 
 Name::Name()
     : data_(nullptr)

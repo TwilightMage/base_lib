@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "Engine/Math.h"
+#include "Math.h"
 
 template<typename KeyType, typename ValueType>
 class Tree2D

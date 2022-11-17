@@ -1,6 +1,6 @@
-﻿#include "../include/base_lib/Logger.h"
+﻿#include "base_lib/Logger.h"
 
-#include "../include/base_lib/Path.h"
+#include "base_lib/Path.h"
 
 Logger* Logger::instance_ = nullptr;
 

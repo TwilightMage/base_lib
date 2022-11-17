@@ -1,8 +1,8 @@
-﻿#include "../include/base_lib/Compound.h"
+﻿#include "base_lib/Compound.h"
 
 #include <deque>
 
-#include "../include/base_lib/Math.h"
+#include "base_lib/Math.h"
 #include "base_lib/BinaryStream.h"
 #include "base_lib/File.h"
 #include "base_lib/Path.h"
