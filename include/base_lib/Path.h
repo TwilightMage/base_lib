@@ -24,8 +24,8 @@ class EXPORT Path : public ISerializable
 {
 public:
 	Path();
-	Path(const String& path_str);
-	Path(const char* str);
+    explicit Path(const String& path_str);
+    explicit Path(const char* str);
 
 	static void init(const String& executablePath);
 	FORCEINLINE static const Path& get_app_path() { return app_path; }
@@ -39,11 +39,12 @@ public:
 	Path get_absolute() const;
 	List<Path> list() const;
 	String get_extension() const;
-	Path with_extension(const String& new_extension);
+	Path with_extension(const String& new_extension) const;
 
 	static String sanitize(const String& path_string);
 
 	Path operator+(const Path& rhs) const;
+    Path operator+(const String& rhs) const;
 
 	String to_string() const;
 	String get_absolute_string() const;

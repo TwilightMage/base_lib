@@ -44,28 +44,24 @@ public:
         }
     }
 
-    template<typename T>
-    requires Data<T>
-    static void write_array(std::ostream& stream, T* value_arr, uint64 length)
+    template<Data T>
+    static void write_array(std::ostream& stream, const T* value_arr, uint64 length)
     {
         stream.write((char*)value_arr, sizeof(T) * length);
     }
-    static void write_array(std::ostream& stream, void* bytes, uint64 bytes_num)
+    static void write_array(std::ostream& stream, const void* bytes, uint64 bytes_num)
     {
-        stream.write((char*)bytes, sizeof(char) * bytes_num);
+        stream.write((char*)bytes, sizeof(byte) * bytes_num);
     }
 
-    template<typename T>
-    requires Data<T>
-    static void read_array(std::istream& stream, T*& out_array, uint64 length)
+    template<Data T>
+    static void read_array(std::istream& stream, T*& dst, uint64 length)
     {
-        out_array = new T[length];
-        stream.read((char*)out_array, sizeof(T) * length);
+        stream.read((char*)dst, sizeof(T) * length);
     }
-    static void read_array(std::istream& stream, void*& out_bytes, uint64 bytes_num)
+    static void read_array(std::istream& stream, void*& dst_bytes, uint64 bytes_num)
     {
-        out_bytes = new char[bytes_num];
-        stream.read((char*)out_bytes, sizeof(char) * bytes_num);
+        stream.read((char*)dst_bytes, sizeof(byte) * bytes_num);
     }
 
     // string length is determined by the first \0 character
@@ -149,5 +145,17 @@ public:
                 out_c_string[j++] = ch;
             }
         }
+    }
+
+    static void move(std::istream& stream, int offset) {
+        stream.seekg(offset, std::ios_base::cur);
+    }
+
+    static void reset(std::istream& stream) {
+        stream.seekg(0);
+    }
+
+    static void reset(std::ostream& stream) {
+        stream.seekp(0);
     }
 };

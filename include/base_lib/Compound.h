@@ -250,6 +250,12 @@ namespace Compound
 
     namespace Convert
     {
+        static bool try_load_value_from_file(const Path& path, Value& result, Name format = Name());
+        static bool try_load_object_from_file(const Path& path, Object& result, Name format = Name());
+        static bool try_load_array_from_file(const Path& path, Array& result, Name format = Name());
+
+        static void save_to_file(const Path& path, bool pretty, const Value& value, Name format = Name());
+        
         class EXPORT IParser
         {
         public:
@@ -267,6 +273,8 @@ namespace Compound
         public:
             virtual String format_value(const Value& val) const = 0;
             virtual bool write_to(std::ostream& stream, const Value& val) const = 0;
+
+            bool pretty = false;
         };
         
         class EXPORT JSON : public IParser, public IFormatter
@@ -276,12 +284,10 @@ namespace Compound
             bool write_to(std::ostream& stream, const Value& val) const override;
             Value parse_value(const String& str) const override;
 
-            bool separate_with_new_line = false;
-
         private:
             void write(std::ostream& stream, const Value& val, uint depth) const;
-            FORCEINLINE String tab_offset(uint depth) const { return separate_with_new_line ? String(' ', depth * 2) : ""; }
-            FORCEINLINE const String new_line() const { return separate_with_new_line ? "\n" : ""; }
+            FORCEINLINE String tab_offset(uint depth) const { return pretty ? String(' ', depth * 2) : ""; }
+            FORCEINLINE const String new_line() const { return pretty ? "\n" : ""; }
 
             Value read_value() const;
             void read_null() const;

@@ -21,6 +21,8 @@ struct EXPORT Version : public IData, IConvertible<Compound::Array>
     bool operator==(const Version& rhs) const;
     bool operator!=(const Version& rhs) const;
 
+    bool match(const Version& rhs, bool check_fix_match = false) const;
+
     void convert_to(Compound::Array& to) const override;
     void convert_from(const Compound::Array& from) override;
 

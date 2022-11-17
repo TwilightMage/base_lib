@@ -190,12 +190,22 @@ inline String String::join<String>(const List<String>& items, const String& glue
 {
 	if (items.length() == 0) return "";
 
-	String result;
+    uint new_length = (items.length() - 1) * glue.length();
+    for (const auto& item : items) {
+        new_length += item.length();
+    }
 
+	String result(' ', new_length);
+
+    char* ptr = result.begin();
 	for (uint i = 0; i < items.length(); i++)
 	{
-		if (i > 0) result += glue;
-		result += items[i];
+		if (i > 0) {
+		    memcpy(ptr, glue.begin(), glue.length());
+		    ptr += glue.length();
+		}
+	    memcpy(ptr, items[i].begin(), items[i].length());
+		ptr += items[i].length();
 	}
 
 	return result;

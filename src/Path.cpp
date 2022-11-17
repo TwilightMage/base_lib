@@ -110,7 +110,7 @@ String Path::get_extension() const
 	return filename + extension;
 }
 
-Path Path::with_extension(const String& new_extension)
+Path Path::with_extension(const String& new_extension) const
 {
 	Path result = *this;
 	result.extension = new_extension;
@@ -128,6 +128,10 @@ String Path::sanitize(const String& path_string)
 Path Path::operator+(const Path& rhs) const
 {
 	return Path(to_string() + '/' + rhs.to_string());
+}
+
+Path Path::operator+(const String& rhs) const {
+    return Path(to_string() + '/' + rhs);
 }
 
 String Path::to_string() const

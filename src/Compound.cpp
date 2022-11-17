@@ -3,6 +3,9 @@
 #include <deque>
 
 #include "../include/base_lib/Math.h"
+#include "base_lib/BinaryStream.h"
+#include "base_lib/File.h"
+#include "base_lib/Path.h"
 
 /*Map<int, SaveGame::Parser> parsers = {
     {1, {
@@ -72,6 +75,177 @@ char const* Compound::ParseException::what() const
     else
     {
         return String::format("%i:%i bad token", line, column).c();
+    }
+}
+
+bool Compound::Convert::try_load_value_from_file(const Path& path, Value& result, Name format) {
+    const Name fmt = format.is_valid() ? format : Name(path.extension);
+
+    result = Value();
+
+    if (fmt == Name("cmp")) {
+        if (const auto reader = BinaryReader::open(path)) {
+            char cmp[3];
+            reader->read_array(&cmp[0], 3);
+            if (strcmp(cmp, "CMP") != 0) return false;
+            
+            result = reader->read<Value>();
+            return true;
+        }
+    }
+    
+    if (path.exists()) {
+        if (const auto parser = parsers.find_or_default(fmt)) {
+            return parser()->try_parse_value(File::read_file(path), result);
+        }
+    }
+
+    return false;
+}
+
+bool Compound::Convert::try_load_object_from_file(const Path& path, Object& result, Name format) {
+    const Name fmt = format.is_valid() ? format : Name(path.extension);
+
+    result = Object();
+    
+    if (fmt == Name("cmp")) {
+        if (const auto reader = BinaryReader::open(path)) {
+            char cmp[3];
+            reader->read_array(&cmp[0], 3);
+            if (strcmp(cmp, "CMP") != 0) return false;
+            
+            const auto type = (Type)reader->read<char>();
+            if (type != Type::Object) return false;
+
+            result = reader->read<Object>();
+            return true;
+        }
+    }
+    
+    if (path.exists()) {
+        if (const auto parser = parsers.find_or_default(fmt)) {
+            return parser()->try_parse_object(File::read_file(path), result);
+        }
+    }
+
+    return false;
+}
+
+bool Compound::Convert::try_load_array_from_file(const Path& path, Array& result, Name format) {
+    const Name fmt = format.is_valid() ? format : Name(path.extension);
+
+    result = Array();
+
+    if (fmt == Name("cmp")) {
+        if (const auto reader = BinaryReader::open(path)) {
+            char cmp[3];
+            reader->read_array(&cmp[0], 3);
+            if (strcmp(cmp, "CMP") != 0) return false;
+            
+            const auto type = (Type)reader->read<char>();
+            if (type != Type::Array) return false;
+
+            result = reader->read<Array>();
+            return true;
+        }
+    }
+    
+    if (path.exists()) {
+        if (const auto parser = parsers.find_or_default(fmt)) {
+            return parser()->try_parse_array(File::read_file(path), result);
+        }
+    }
+
+    return false;
+}
+
+void Compound::Convert::save_to_file(const Path& path, bool pretty, const Value& value, Name format) {
+    const Name fmt = format.is_valid() ? format : Name(path.extension);
+
+    if (value.get_type() != Type::Object && value.get_type() != Type::Array) return;
+    
+    if (path.extension == "cmp") {
+        if (const auto& writer = BinaryWriter::open(path)) {
+            writer->write_array("CMP", 3);
+            
+            writer->write(value);
+            writer->close();
+        }
+
+        return;
+    }
+    
+    if (const auto formatter = formatters.find_or_default(fmt)) {
+        auto c = formatter();
+        c->pretty = true;
+        File::write_file(path, c->format_value(value));
+    }
+}
+
+Compound::Object Compound::Convert::IParser::parse_object(const String& str) const
+{
+    return parse_value(str).get_object();
+}
+
+Compound::Array Compound::Convert::IParser::parse_array(const String& str) const
+{
+    return parse_value(str).get_array();
+}
+
+bool Compound::Convert::IParser::try_parse_value(const String& str, Value& out_value) const
+{
+    out_value = Value();
+    
+    try
+    {
+        out_value = parse_value(str);
+        return true;
+    }
+    catch (ParseException&)
+    {
+        return false;
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+bool Compound::Convert::IParser::try_parse_object(const String& str, Object& out_value) const
+{
+    out_value = Object();
+    
+    try
+    {
+        out_value = parse_object(str);
+        return true;
+    }
+    catch (ParseException&)
+    {
+        return false;
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+bool Compound::Convert::IParser::try_parse_array(const String& str, Array& out_value) const
+{
+    out_value = Array();
+    
+    try
+    {
+        out_value = parse_array(str);
+        return true;
+    }
+    catch (ParseException&)
+    {
+        return false;
+    }
+    catch (...)
+    {
+        throw;
     }
 }
 
@@ -985,70 +1159,6 @@ Compound::Object& Compound::Object::chain(const String& key, const Object& value
 }
 
 // ----------------------------- Object End
-
-Compound::Object Compound::Convert::IParser::parse_object(const String& str) const
-{
-    return parse_value(str).get_object();
-}
-
-Compound::Array Compound::Convert::IParser::parse_array(const String& str) const
-{
-    return parse_value(str).get_array();
-}
-
-bool Compound::Convert::IParser::try_parse_value(const String& str, Value& out_value) const
-{
-    try
-    {
-        out_value = parse_value(str);
-        return true;
-    }
-    catch (ParseException&)
-    {
-        out_value = Value();
-        return false;
-    }
-    catch (...)
-    {
-        throw;
-    }
-}
-
-bool Compound::Convert::IParser::try_parse_object(const String& str, Object& out_value) const
-{
-    try
-    {
-        out_value = parse_object(str);
-        return true;
-    }
-    catch (ParseException&)
-    {
-        out_value = Object();
-        return false;
-    }
-    catch (...)
-    {
-        throw;
-    }
-}
-
-bool Compound::Convert::IParser::try_parse_array(const String& str, Array& out_value) const
-{
-    try
-    {
-        out_value = parse_array(str);
-        return true;
-    }
-    catch (ParseException&)
-    {
-        out_value = Array();
-        return false;
-    }
-    catch (...)
-    {
-        throw;
-    }
-}
 
 void Compound::Value::write_to_stream(std::ostream& stream) const
 {
