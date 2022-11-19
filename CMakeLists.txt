@@ -38,8 +38,10 @@ set(CMAKE_CXX_STANDARD 23)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(DEBUG=1)
+    set(DEBUG TRUE)
 elseif()
     add_compile_definitions(DEBUG=0)
+    set(DEBUG FALSE)
 endif()
 
 if(WIN32)

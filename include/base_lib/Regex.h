@@ -2,7 +2,6 @@
 
 #include "Pointers.h"
 #include "SimpleMap.h"
-#include "String.h"
 
 class EXPORT Regex
 {

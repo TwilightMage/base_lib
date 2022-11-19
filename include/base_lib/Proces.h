@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "framework.h"
-#include "List.h"
 #include "Name.h"
 
 class String;

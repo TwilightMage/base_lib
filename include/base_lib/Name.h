@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "BasicTypes.h"
-#include "FastOperator.h"
 #include "String.h"
 
 class EXPORT Name : public ISerializable, public IConvertible<String>

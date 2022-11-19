@@ -1,5 +1,7 @@
 ﻿#include "base_lib/Margins.h"
 
+#include "base_lib/Compound.h"
+
 Margins::Margins()
     : left(0)
     , right(0)

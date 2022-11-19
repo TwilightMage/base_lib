@@ -1,5 +1,7 @@
 ﻿#include "base_lib/Version.h"
 
+#include "base_lib/Compound.h"
+
 Version::Version()
     : version_number(0)
       , patch_number(0)

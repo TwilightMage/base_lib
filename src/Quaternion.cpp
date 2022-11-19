@@ -3,6 +3,9 @@
 #include <glm/detail/type_quat.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include "base_lib/Math.h"
+#include "base_lib/Compound.h"
+
 Quaternion::Quaternion()
     : x(0.0f)
     , y(0.0f)
@@ -231,20 +234,15 @@ Quaternion Quaternion::operator-() const
     return Quaternion(-x, -y, -z, -w);
 }
 
-void Quaternion::convert_to(Compound::Object& to) const
+void Quaternion::convert_to(Compound::Array& to) const
 {
-    to = Compound::Object{
-        { "x", x },
-        { "y", y },
-        { "z", z },
-        { "w", w }
-    };
+    to = Compound::Array{x, y, z, w};
 }
 
-void Quaternion::convert_from(const Compound::Object& from)
+void Quaternion::convert_from(const Compound::Array& from)
 {
-    x = from.get_float("x", 0);
-    y = from.get_float("y", 0);
-    z = from.get_float("z", 0);
-    w = from.get_float("w", 1);
+    x = from.at_or_default(0, 0.0f).get_float();
+    y = from.at_or_default(1, 0.0f).get_float();
+    z = from.at_or_default(2, 0.0f).get_float();
+    w = from.at_or_default(3, 1.0f).get_float();
 }

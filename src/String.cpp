@@ -200,9 +200,9 @@ uint String::allocated_length() const
 	return allocated_length_;
 }
 
-int String::index_of(const String& substr) const
+uint String::index_of(const String& substr) const
 {
-	if (substr.length_ > length_) return -1;
+	if (substr.length_ > length_) return BAD_INDEX;
 
 	for (uint i = 0; i < length_ - substr.length_ + 1; i++)
 	{
@@ -222,12 +222,12 @@ int String::index_of(const String& substr) const
 		}
 	}
 
-	return -1;
+	return BAD_INDEX;
 }
 
-int String::last_index_of(const String& substr) const
+uint String::last_index_of(const String& substr) const
 {
-	if (substr.length_ > length_) return -1;
+	if (substr.length_ > length_) return BAD_INDEX;
 
 	for (uint i = substr.length_; i < length_; i++)
 	{
@@ -247,10 +247,10 @@ int String::last_index_of(const String& substr) const
 		}
 	}
 
-	return -1;
+	return BAD_INDEX;
 }
 
-int String::index_of_char(const String& chars) const
+uint String::index_of_char(const String& chars) const
 {
 	for (uint i = 0; i < length_; i++)
 	{
@@ -260,10 +260,10 @@ int String::index_of_char(const String& chars) const
 		}
 	}
 
-	return -1;
+	return BAD_INDEX;
 }
 
-int String::last_index_of_char(const String& chars) const
+uint String::last_index_of_char(const String& chars) const
 {
 	for (uint i = 0; i < length_; i++)
 	{
@@ -273,7 +273,7 @@ int String::last_index_of_char(const String& chars) const
 		}
 	}
 
-	return -1;
+	return BAD_INDEX;
 }
 
 String String::substring(int start, uint num) const
@@ -445,7 +445,7 @@ bool String::ends_with(const String& val) const
 
 bool String::contains(const String& substr) const
 {
-	return index_of(substr) >= 0;
+	return index_of(substr) != BAD_INDEX;
 }
 
 bool String::is_empty() const
@@ -669,8 +669,8 @@ char String::unescape_char(char ch)
 
 bool String::replace_single(String& src, const String& from, const String& to)
 {
-	const int pos = src.index_of(from);
-	if (pos != -1)
+	const uint pos = src.index_of(from);
+	if (pos != BAD_INDEX)
 	{
 		const int offset = to.length_ - from.length_;
 

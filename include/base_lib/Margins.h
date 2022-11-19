@@ -1,9 +1,10 @@
 ﻿#pragma once
 
-#include "Compound.h"
-#include "framework.h"
-#include "IConvertible.h"
-#include "ISerializable.h"
+#include "IData.h"
+
+namespace Compound {
+    class Object;
+}
 
 class EXPORT Margins : public IData
 {

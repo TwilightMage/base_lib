@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "framework.h"
 #include "IData.h"
 
 template<typename ValueType>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Pointers.h"
-#include "String.h"
 
 class Module;
 

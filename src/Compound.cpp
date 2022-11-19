@@ -822,7 +822,7 @@ Compound::Object::Object(const SimpleMap<String, Value>& rhs)
 {
 }
 
-Compound::Object::Object(const std::initializer_list<Pair<String, Value>>& rhs)
+Compound::Object::Object(const std::initializer_list<KeyValuePair<String, Value>>& rhs)
     : SimpleMap<String, Value>(rhs)
 {
 }
@@ -2073,7 +2073,7 @@ String Compound::Value::to_string() const
     case Type::Array:
         return "[" + String::join(get_data<Array>().select<String>([](const Value& val) -> String{ return val.to_string(); }), ", ") + "]";
     case Type::Object:
-        return "{" + String::join(get_data<Object>().entries.select<String>([](Pair<String, Value>* pair) -> String{ return "\"" + pair->key.replace("\\", "\\\\").replace("\"", "\\\"") + "\": " + pair->value.to_string(); }), ", ") + "}";
+        return "{" + String::join(get_data<Object>().entries.select<String>([](KeyValuePair<String, Value>* pair) -> String{ return "\"" + pair->key.replace("\\", "\\\\").replace("\"", "\\\"") + "\": " + pair->value.to_string(); }), ", ") + "}";
     case Type::BinaryData:
         return "<" + String::make(binary_type_size) + " bytes>";
     }

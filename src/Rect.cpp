@@ -1,5 +1,6 @@
 ﻿#include "base_lib/Rect.h"
 
+#include "base_lib/Compound.h"
 #include "base_lib/Math.h"
 
 Rect::Rect()
@@ -80,20 +81,15 @@ int Rect::bottom() const
     return y + h;
 }
 
-void Rect::convert_to(Compound::Object& to) const
+void Rect::convert_to(Compound::Array& to) const
 {
-    to = Compound::Object{
-        { "x", x },
-        { "y", y },
-        { "w", w },
-        { "h", h }
-    };
+    to = Compound::Array{x, y, w, h};
 }
 
-void Rect::convert_from(const Compound::Object& from)
+void Rect::convert_from(const Compound::Array& from)
 {
-    x = from.get_int32("x", 0);
-    y = from.get_int32("y", 0);
-    w = from.get_int32("w", 0);
-    h = from.get_int32("h", 0);
+    x = from.at_or_default(0, 0).get_int32();
+    y = from.at_or_default(1, 0).get_int32();
+    w = from.at_or_default(2, 0).get_int32();
+    h = from.at_or_default(3, 0).get_int32();
 }

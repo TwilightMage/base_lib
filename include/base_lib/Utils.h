@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "BasicTypes.h"
 #include "String.h"
 
 class EXPORT Utils

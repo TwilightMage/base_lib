@@ -4,6 +4,7 @@
 
 #include "base_lib/Math.h"
 #include "base_lib/Vector3.h"
+#include "base_lib/Compound.h"
 
 Vector2::Vector2()
     : x(0.0f)
@@ -172,18 +173,15 @@ bool Vector2::operator!=(const Vector2& rhs) const
     return (x != rhs.x || y != rhs.y);
 }
 
-void Vector2::convert_to(Compound::Object& to) const
+void Vector2::convert_to(Compound::Array& to) const
 {
-    to = Compound::Object{
-        { "x", x},
-        { "y", y }
-    };
+    to = Compound::Array{x, y};
 }
 
-void Vector2::convert_from(const Compound::Object& from)
+void Vector2::convert_from(const Compound::Array& from)
 {
-    x = from.get_float("x", 0);
-    y = from.get_float("y", 0);
+    x = from.at_or_default(0, 0.0f).get_float();
+    y = from.at_or_default(1, 0.0f).get_float();
 }
 
 Vector2 Vector2::zero()

@@ -3,7 +3,6 @@
 #include <mutex>
 
 #include "LogStream.h"
-#include "String.h"
 
 class Path;
 

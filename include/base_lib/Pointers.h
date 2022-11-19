@@ -3,8 +3,6 @@
 //#define USE_OWN_SHARED_POINTERS
 
 #include "Assert.h"
-#include "BasicTypes.h"
-#include "framework.h"
 
 #ifdef USE_OWN_SHARED_POINTERS
 

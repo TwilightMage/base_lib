@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "Compound.h"
-#include "IConvertible.h"
 #include "Vector3.h"
 
 class EXPORT Quaternion : public IData
@@ -46,8 +44,8 @@ public:
     bool operator!=(const Quaternion& rhs) const;
     Quaternion operator-() const;
 
-    void convert_to(Compound::Object& to) const;
-    void convert_from(const Compound::Object& from);
+    void convert_to(Compound::Array& to) const;
+    void convert_from(const Compound::Array& from);
     
     float x;
     float y;

@@ -1,5 +1,8 @@
 ﻿#include "base_lib/Vector3.h"
 
+#include "base_lib/Math.h"
+#include "base_lib/Compound.h"
+
 Vector3::Vector3()
     : x(0.0f)
     , y(0.0f)
@@ -82,6 +85,12 @@ String Vector3::to_string() const
 {
     return String::format("{ x=%f, y=%f, z=%f }", x, y, z);
 }
+
+float Vector3::angle_deg(const Vector3& a, const Vector3& b) { return Math::acos_deg(a.normalized().dot_product(b.normalized())); }
+
+float Vector3::angle_rad(const Vector3& a, const Vector3& b) { return Math::acos_rad(a.normalized().dot_product(b.normalized())); }
+
+float Vector3::distance(const Vector3& a, const Vector3& b) { return (a - b).magnitude(); }
 
 Vector3 Vector3::reflect(const Vector3& in_vec, const Vector3& normal)
 {
@@ -228,18 +237,14 @@ float Vector3::sum_all() const
     return x + y + z;
 }
 
-void Vector3::convert_to(Compound::Object& to) const
+void Vector3::convert_to(Compound::Array& to) const
 {
-    to = Compound::Object{
-        { "x", x},
-        { "y", y},
-        { "z", z}
-    };
+    to = Compound::Array{x, y, z};
 }
 
-void Vector3::convert_from(const Compound::Object& from)
+void Vector3::convert_from(const Compound::Array& from)
 {
-    x = from.get_float("x", 0);
-    y = from.get_float("y", 0);
-    z = from.get_float("z", 0);
+    x = from.at_or_default(0, 0.0f).get_float();
+    y = from.at_or_default(1, 0.0f).get_float();
+    z = from.at_or_default(2, 0.0f).get_float();
 }

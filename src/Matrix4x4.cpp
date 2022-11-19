@@ -1,8 +1,11 @@
 ﻿#include "base_lib/Matrix4x4.h"
 
-#include <glm/ext/matrix_transform.hpp>
-
+#include "base_lib/Compound.h"
 #include "base_lib/Math.h"
+#include "base_lib/Vector3.h"
+#include "base_lib/Quaternion.h"
+
+#include <glm/ext/matrix_transform.hpp>
 
 Matrix4x4::Matrix4x4()
     : Matrix4x4(1.0f)

@@ -1,10 +1,6 @@
 ﻿#pragma once
 
-#include "BasicTypes.h"
-#include "Compound.h"
-#include "framework.h"
 #include "Quaternion.h"
-#include "Vector3.h"
 
 class EXPORT Color : public IData
 {
@@ -15,11 +11,11 @@ public:
     Color(byte r, byte g, byte b, byte a);
     
     Vector3 to_vector3() const;
-    Quaternion to_quaternion() const;
+    Vector4 to_vector4() const;
     String to_string() const;
     
-    void convert_to(Compound::Object& to) const;
-    void convert_from(const Compound::Object& from);
+    void convert_to(Compound::Array& to) const;
+    void convert_from(const Compound::Array& from);
     
     byte r;
     byte g;

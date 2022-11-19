@@ -1,5 +1,7 @@
 #include "base_lib/File.h"
 
+#include "base_lib/Path.h"
+
 String File::read_file(const Path& path)
 {
 	std::ifstream file(path.get_absolute_string().std(), std::ios::ate | std::ios::binary);

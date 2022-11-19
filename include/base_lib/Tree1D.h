@@ -2,16 +2,15 @@
 
 #include <functional>
 
-
 #include "Math.h"
 
-template<typename KeyType, typename ValueType>
+template<typename PointType>
 class Tree1D
 {
 public:
     struct Node
     {
-        Pair<KeyType, ValueType> point;
+        PointType point;
         Node* left = nullptr;
         Node* right = nullptr;
         int h = 1;
@@ -24,7 +23,7 @@ public:
         {
         }
         
-        explicit Node(const Pair<KeyType, ValueType>& point)
+        explicit Node(const PointType& point)
             : point(point)
         {
         }
@@ -34,7 +33,7 @@ public:
             h = Math::max(left ? left->h : 0, right ? right->h : 0) + 1;
         }
 
-        void write_to_stream(std::ostream& stream) const requires Serializable<KeyType> && Serializable<ValueType>
+        void write_to_stream(std::ostream& stream) const requires Serializable<PointType>
         {
             StreamUtils::write(stream, point);
             StreamUtils::write(stream, (char)(!!left << 1 | !!right));
@@ -42,7 +41,7 @@ public:
             if (right) right->write_to_stream(stream);
         }
 
-        void read_from_stream(std::istream& stream) requires Serializable<KeyType> && Serializable<ValueType>
+        void read_from_stream(std::istream& stream) requires Serializable<PointType>
         {
             StreamUtils::read(stream, point);
             const char state = StreamUtils::read<char>(stream);
@@ -103,8 +102,8 @@ public:
             return *this;
         }
 
-        Pair<KeyType, ValueType>& operator*() const { return stack_[stack_i_ - 1]->point; }
-        Pair<KeyType, ValueType>& operator->() { return stack_[stack_i_ - 1]->point; }
+        PointType& operator*() const { return stack_[stack_i_ - 1]->point; }
+        PointType& operator->() { return stack_[stack_i_ - 1]->point; }
    
         explicit Iterator(const Tree1D* tree)
             : Iterator(tree, 0)
@@ -252,23 +251,23 @@ private:
         }
     }
     
-    static int insert(const Pair<KeyType, ValueType>& point, Node*& node, uint& size)
+    static int insert(const PointType& point, Node*& node, uint& size, Node*& new_node)
     {
         if (node)
         {
-            if (point.key == node->point.key)
+            if (point == node->point)
             {
-                node->point.value = point.value;
+                node->point = point;
                 return node->h;
             }
 
-            node->h = insert(point, (point.key < node->point.key) ? node->left : node->right, size) + 1;
+            node->h = insert(point, (point < node->point) ? node->left : node->right, size, new_node) + 1;
             balance(node);
             return node->h;
         }
         else
         {
-            node = new Node(point);
+            node = new_node = new Node(point);
             size++;
             return node->h;
         }
@@ -300,7 +299,7 @@ private:
         return take_most_right(node->left);
     }
     
-    static Pair<KeyType, ValueType>* find(std::function<bool(const Pair<KeyType, ValueType>& point)> predicate, Node* node)
+    static PointType* find(std::function<bool(const PointType& point)> predicate, Node* node)
     {
         if (node)
         {
@@ -312,11 +311,11 @@ private:
         return nullptr;
     }
 
-    static int remove(const KeyType& x, Node*& node, uint& size)
+    static int remove(const PointType& point, Node*& node, uint& size)
     {
         if (node)
         {
-            if (x == node->point.key)
+            if (point == node->point)
             {
                 size--;
                 if (node->left)
@@ -344,14 +343,14 @@ private:
                 }
             }
 
-            node->h = remove(x, (x < node->point.key) ? node->left : node->right, size) + 1;
+            node->h = remove(point, (point < node->point) ? node->left : node->right, size) + 1;
             return node->h;
         }
 
         return 0;
     }
 
-    static void for_each(std::function<void(const Pair<KeyType, ValueType>& point)> callback, Node* node)
+    static void for_each(std::function<void(const PointType& point)> callback, Node* node)
     {
         if (node)
         {
@@ -419,39 +418,41 @@ public:
         size_ = 0;
     }
     
-    void insert(const KeyType& x, const ValueType& value)
+    PointType& insert(const PointType& point)
     {
-        insert(Pair<KeyType, ValueType>(x, value), root_, size_);
+        Node* new_node;
+        insert(point, root_, size_, new_node);
+        return new_node->point;
     }
 
-    ValueType* find(const KeyType& x) const
+    PointType* find(const PointType& point_pattern) const
     {
         Node* current = root_;
 
         while (current != nullptr)
         {
-            if (x == current->point.key)
+            if (point_pattern == current->point)
             {
-                return &current->point.value;
+                return &current->point;
             }
 
-            current = (x < current->point.key) ? current->left : current->right;
+            current = (point_pattern < current->point) ? current->left : current->right;
         }
 
         return nullptr;
     }
 
-    Pair<KeyType, ValueType>* find(std::function<bool(const Pair<KeyType, ValueType>& point)> callback) const
+    PointType* find(std::function<bool(const PointType& point)> callback) const
     {
         return find(callback, root_);
     }
 
-    void remove(const KeyType& x)
+    void remove(const PointType& point)
     {
-        remove(x, root_, size_);
+        remove(point, root_, size_);
     }
 
-    void for_each(std::function<void(const Pair<KeyType, ValueType>& point)> callback)
+    void for_each(std::function<void(const PointType& point)> callback)
     {
         for_each(callback, root_);
     }
@@ -481,13 +482,13 @@ public:
         return size_;
     }
 
-    void write_to_stream(std::ostream& stream) const requires Serializable<KeyType> && Serializable<ValueType>
+    void write_to_stream(std::ostream& stream) const requires Serializable<PointType>
     {
         StreamUtils::write(root_ != nullptr);
         if (root_ != nullptr) root_->write_to_stream(stream);
     }
 
-    void read_from_stream(std::istream& stream) requires Serializable<KeyType> && Serializable<ValueType>
+    void read_from_stream(std::istream& stream) requires Serializable<PointType>
     {
         if (StreamUtils::read<bool>(stream))
         {

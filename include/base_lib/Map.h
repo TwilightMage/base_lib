@@ -14,7 +14,7 @@ public:
     {
     }
 
-    Map(const std::initializer_list<Pair<Key, Value>>& initializer_list)
+    Map(const std::initializer_list<KeyValuePair<Key, Value>>& initializer_list)
     {
         for (const auto& pair : initializer_list)
         {
@@ -24,29 +24,27 @@ public:
     
     void insert(const Key& key, const Value& new_value)
     {
-        data_.insert(key, new_value);
+        data_.insert(KeyValuePair<Key, Value>(key, new_value));
     }
 
     Value& find_or_insert(const Key& key, std::function<Value()> generator)
     {
-        if (auto value = data_.find(key))
+        if (auto value = data_.find(KeyValuePair<Key, Value>(key)))
         {
             return *value;
         }
-        
-        data_.insert(key, generator());
-        return *data_.find(key);
+
+        return data_.insert(KeyValuePair<Key, Value>(key, generator())).value;
     }
     
     Value& find_or_insert(const Key& key, const Value& new_value = Value())
     {
-        if (auto value = data_.find(key))
+        if (auto value = data_.find(KeyValuePair<Key, Value>(key)))
         {
             return *value;
         }
-        
-        data_.insert(key, new_value);
-        return *data_.find(key);
+
+        return data_.insert(KeyValuePair<Key, Value>(key, new_value)).value;
     }
 
     Value& operator[](const Key& key)
@@ -61,20 +59,19 @@ public:
 
     Value& at(const Key& key)
     {
-        if (auto value = data_.find(key))
+        if (auto value = data_.find(KeyValuePair<Key, Value>(key)))
         {
-            return *value;
+            return value->value;
         }
-        
-        data_.insert(key, Value());
-        return *data_.find(key);
+
+        return data_.insert(KeyValuePair<Key, Value>(key, Value())).value;
     }
 
     const Value& at(const Key& key) const
     {
-        if (auto value = data_.find(key))
+        if (auto value = data_.find(KeyValuePair<Key, Value>(key)))
         {
-            return *value;
+            return value->value;
         }
 
         throw std::runtime_error("Unable to find value in map");
@@ -82,12 +79,12 @@ public:
 
     bool contains(const Key& key) const
     {
-        return data_.find(key) != nullptr;
+        return data_.find(KeyValuePair<Key, Value>(key)) != nullptr;
     }
 
     void remove(const Key& key)
     {
-        data_.remove(key);
+        data_.remove(KeyValuePair<Key, Value>(key));
     }
 
     void clear()
@@ -97,14 +94,21 @@ public:
 
     Value* find(const Key& key) const
     {
-        return data_.find(key);
+        if (auto found = data_.find(KeyValuePair<Key, Value>(key)))
+        {
+            return &found->value;
+        }
+        else
+        {
+            return nullptr;
+        }
     }
 
     Value find_or_default(const Key& key) const
     {
-        if (auto found = data_.find(key))
+        if (auto found = data_.find(KeyValuePair<Key, Value>(key)))
         {
-            return *found;
+            return found->value;
         }
         else
         {
@@ -114,9 +118,9 @@ public:
 
     Value find_or_default(const Key& key, const Value& default_value) const
     {
-        if (auto found = data_.find(key))
+        if (auto found = data_.find(KeyValuePair<Key, Value>(key)))
         {
-            return *found;
+            return found->value;
         }
         else
         {
@@ -151,12 +155,12 @@ public:
         return data_.size();
     }
 
-    typename Tree1D<Key, Value>::Iterator begin() const
+    typename Tree1D<KeyValuePair<Key, Value>>::Iterator begin() const
     {
         return data_.begin();
     }
 
-    typename Tree1D<Key, Value>::Iterator end() const
+    typename Tree1D<KeyValuePair<Key, Value>>::Iterator end() const
     {
         return data_.end();
     }
@@ -172,5 +176,5 @@ public:
     }
 
 private:
-    Tree1D<Key, Value> data_;
+    Tree1D<KeyValuePair<Key, Value>> data_;
 };

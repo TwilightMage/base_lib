@@ -1,12 +1,9 @@
 ﻿#pragma once
 
-#include "IConvertible.h"
-#include "List.h"
 #include "Map.h"
 #include "Name.h"
 #include "Pointers.h"
 #include "SimpleMap.h"
-#include "String.h"
 #include "TextReader.h"
 
 class Name;
@@ -33,7 +30,7 @@ namespace Compound
         BinaryData
     };
 
-    const static int numeric_type_mask = 1 << (int)Type::Char | 1 << (int)Type::Short | 1 << (int)Type::Int32 | 1 << (int)Type::Int64 | 1 << (int)Type::Bool | 1 << (int)Type::Float | 1 << (int)Type::Double;
+    constexpr int numeric_type_mask = 1 << (int)Type::Char | 1 << (int)Type::Short | 1 << (int)Type::Int32 | 1 << (int)Type::Int64 | 1 << (int)Type::Bool | 1 << (int)Type::Float | 1 << (int)Type::Double;
 
     template<typename T>
     concept CompoundBinaryData = Data<T> && !std::is_arithmetic<T>::value && !std::is_pointer<T>::value;
@@ -95,7 +92,7 @@ namespace Compound
         bool is_empty() const override { return set.size() == 0 && merge.size() == 0; }
         Type get_target_type() const override { return Type::Array; }
         
-        uint newLength;
+        uint newLength = 0;
         SimpleMap<uint, Value> set;
         SimpleMap<uint, Shared<IDiff>> merge;
     };
@@ -135,7 +132,7 @@ namespace Compound
         Object();
         Object(const Object& rhs);
         Object(const SimpleMap<String, Value>& rhs);
-        Object(const std::initializer_list<Pair<String, Value>>& rhs);
+        Object(const std::initializer_list<KeyValuePair<String, Value>>& rhs);
 
         Object& operator=(const Object& rhs);
         Object& operator=(const SimpleMap<String, Value>& rhs);
@@ -250,11 +247,11 @@ namespace Compound
 
     namespace Convert
     {
-        static bool try_load_value_from_file(const Path& path, Value& result, Name format = Name());
-        static bool try_load_object_from_file(const Path& path, Object& result, Name format = Name());
-        static bool try_load_array_from_file(const Path& path, Array& result, Name format = Name());
+        bool try_load_value_from_file(const Path& path, Value& result, Name format = Name());
+        bool try_load_object_from_file(const Path& path, Object& result, Name format = Name());
+        bool try_load_array_from_file(const Path& path, Array& result, Name format = Name());
 
-        static void save_to_file(const Path& path, bool pretty, const Value& value, Name format = Name());
+        void save_to_file(const Path& path, bool pretty, const Value& value, Name format = Name());
         
         class EXPORT IParser
         {
@@ -313,11 +310,11 @@ namespace Compound
             void write(std::ostream& stream, const Value& val, uint depth) const;
         };
 
-        static Map<Name, Shared<IParser>(*)()> parsers = {
+        inline Map<Name, Shared<IParser>(*)()> parsers = {
             {"json", []() -> Shared<IParser>{ return MakeShared<JSON>(); }}
         };
-        
-        static Map<Name, Shared<IFormatter>(*)()> formatters = {
+
+        inline Map<Name, Shared<IFormatter>(*)()> formatters = {
             {"json", []() -> Shared<IFormatter>{ return MakeShared<JSON>(); }},
             {"yaml", []() -> Shared<IFormatter>{ return MakeShared<YAML>(); }}
         };

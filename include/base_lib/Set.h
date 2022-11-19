@@ -4,7 +4,6 @@
 #include <stdexcept>
 
 #include "Array.h"
-#include "framework.h"
 
 template<typename T>
 class Set : public Array<T>

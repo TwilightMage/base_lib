@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Array2D.h"
-#include "Color.h"
-#include "Path.h"
+
+class Color;
+class Path;
 
 class stb
 {

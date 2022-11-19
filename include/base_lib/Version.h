@@ -1,10 +1,10 @@
 ﻿#pragma once
 
-#include "BasicTypes.h"
-#include "Compound.h"
-#include "framework.h"
-#include "IConvertible.h"
 #include "String.h"
+
+namespace Compound {
+    class Array;
+}
 
 struct EXPORT Version : public IData, IConvertible<Compound::Array>
 {

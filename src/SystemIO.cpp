@@ -2,6 +2,7 @@
 
 #include "base_lib/framework.h"
 #include "base_lib/Math.h"
+#include "base_lib/Path.h"
 
 #if PLATFORM_WINDOWS
 #include <commdlg.h>

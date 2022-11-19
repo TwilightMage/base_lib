@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "Compound.h"
-#include "IConvertible.h"
 #include "Pointers.h"
 #include "Vector2.h"
 
@@ -23,8 +21,8 @@ public:
     int top() const;
     int bottom() const;
 
-    void convert_to(Compound::Object& to) const;
-    void convert_from(const Compound::Object& from);
+    void convert_to(Compound::Array& to) const;
+    void convert_from(const Compound::Array& from);
 
     int x;
     int y;

@@ -10,17 +10,17 @@ struct SimpleMap
     {
     }
 
-    SimpleMap(const std::initializer_list<Pair<K, V>>& rhs)
+    SimpleMap(const std::initializer_list<KeyValuePair<K, V>>& rhs)
     {
-        for (const Pair<K, V>& entry : rhs)
+        for (const KeyValuePair<K, V>& entry : rhs)
         {
             operator[](entry.key) = entry.value;
         }
     }
 
-    SimpleMap(const List<Pair<K, V>>& rhs)
+    SimpleMap(const List<KeyValuePair<K, V>>& rhs)
     {
-        for (const Pair<K, V>& entry : rhs)
+        for (const KeyValuePair<K, V>& entry : rhs)
         {
             operator[](entry.key) = entry.value;
         }
@@ -30,9 +30,9 @@ struct SimpleMap
         : entries(rhs.size())
     {
         uint i = 0;
-        for (Pair<K, V>* entry : rhs.entries)
+        for (KeyValuePair<K, V>* entry : rhs.entries)
         {
-            entries[i++] = new Pair<K, V>(*entry);
+            entries[i++] = new KeyValuePair<K, V>(*entry);
         }
     }
 
@@ -57,22 +57,22 @@ struct SimpleMap
         entries.clear();
     }
 
-    Pair<K, V>** begin()
+    KeyValuePair<K, V>** begin()
     {
         return entries.begin();
     }
 
-    Pair<K, V>** end()
+    KeyValuePair<K, V>** end()
     {
         return entries.end();
     }
 
-    const Pair<K, V>* const* begin() const
+    const KeyValuePair<K, V>* const* begin() const
     {
         return entries.begin();
     }
 
-    const Pair<K, V>* const* end() const
+    const KeyValuePair<K, V>* const* end() const
     {
         return entries.end();
     }
@@ -158,7 +158,7 @@ struct SimpleMap
 
         m = (l + r) / 2;
         
-        entries.insert(new Pair<K, V>(key, V()), m);
+        entries.insert(new KeyValuePair<K, V>(key, V()), m);
         return entries[m]->value;
     }
 
@@ -268,7 +268,7 @@ struct SimpleMap
         entries.resize(StreamUtils::read<uint>(stream));
         for (uint i = 0; i < entries.length(); i++)
         {
-            if (entries[i] == nullptr) entries[i] = new Pair<K, V>();
+            if (entries[i] == nullptr) entries[i] = new KeyValuePair<K, V>();
             StreamUtils::read(stream, *entries[i]);
         }
     }
@@ -308,5 +308,5 @@ struct SimpleMap
         return entries == rhs.entries;
     }
 
-    List<Pair<K, V>*> entries;
+    List<KeyValuePair<K, V>*> entries;
 };

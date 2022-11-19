@@ -3,8 +3,6 @@
 #include <iomanip>
 #include <sstream>
 
-#include "framework.h"
-#include "ISerializable.h"
 #include "List.h"
 #include "Pair.h"
 
@@ -45,10 +43,10 @@ public:
 
 	uint length() const;
 	uint allocated_length() const;
-	int index_of(const String& substr) const;
-	int last_index_of(const String& substr) const;
-	int index_of_char(const String& chars) const;
-	int last_index_of_char(const String& chars) const;
+	uint index_of(const String& substr) const;
+	uint last_index_of(const String& substr) const;
+	uint index_of_char(const String& chars) const;
+	uint last_index_of_char(const String& chars) const;
 	String substring(int start, uint num) const;
 	String substring(int start) const;
 	String replace(const String& from, const String& to) const;

@@ -6,6 +6,9 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb/stb_image_write.h>
 
+#include "base_lib/Color.h"
+#include "base_lib/Path.h"
+
 Array2D<Color> stb::load(const Path& path, uint& out_width, uint& out_height)
 {
     int w;

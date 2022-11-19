@@ -1,8 +1,5 @@
 ﻿#pragma once
 
-#include "framework.h"
-#include "Math.h"
-#include "String.h"
 #include "Vector2.h"
 
 class EXPORT Vector3 : public IData
@@ -23,9 +20,9 @@ public:
     void normalize();
     String to_string() const;
 
-    static float angle_deg(const Vector3& a, const Vector3& b) { return Math::acos_deg(a.normalized().dot_product(b.normalized())); }
-    static float angle_rad(const Vector3& a, const Vector3& b) { return Math::acos_rad(a.normalized().dot_product(b.normalized())); }
-    static float distance(const Vector3& a, const Vector3& b) { return (a - b).magnitude(); }
+    static float angle_deg(const Vector3& a, const Vector3& b);
+    static float angle_rad(const Vector3& a, const Vector3& b);
+    static float distance(const Vector3& a, const Vector3& b);
     static Vector3 reflect(const Vector3& in_vec, const Vector3& normal);
 
     float get_min_axis() const;
@@ -54,8 +51,8 @@ public:
 
     float sum_all() const;
 
-    void convert_to(Compound::Object& to) const;
-    void convert_from(const Compound::Object& from);
+    void convert_to(Compound::Array& to) const;
+    void convert_from(const Compound::Array& from);
     
     float x;
     float y;

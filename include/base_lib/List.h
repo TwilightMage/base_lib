@@ -6,9 +6,10 @@
 #include <vector>
 
 #include "Array.h"
-#include "BasicTypes.h"
 #include "IConvertible.h"
 #include "StreamUtils.h"
+
+constexpr uint BAD_INDEX = 0xFFFFFFFF;
 
 template<typename ValueType>
 class List : public Array<ValueType>
@@ -228,26 +229,26 @@ public:
         return false;
     }
 
-    int index_of(const ValueType& item) const
+    uint index_of(const ValueType& item) const
     {
-        if (length_ == 0) return -1;
+        if (length_ == 0) return BAD_INDEX;
         
         for (uint i = 0; i < length_; i++)
         {
             if (inner_[i] == item) return i;
         }
-        return -1;
+        return BAD_INDEX;
     }
 
-    int index_of(std::function<bool(const ValueType& item)> predicate) const
+    uint index_of(std::function<bool(const ValueType& item)> predicate) const
     {
-        if (length_ == 0) return -1;
+        if (length_ == 0) return BAD_INDEX;
         
         for (uint i = 0; i < length_; i++)
         {
             if (predicate(inner_[i])) return i;
         }
-        return -1;
+        return BAD_INDEX;
     }
 
     void remove_at(uint index)
@@ -453,6 +454,22 @@ public:
         if (index >= length_)
         {
             throw std::out_of_range("Parameter \"index\" is greater than last item index");
+        }
+
+        return inner_[index];
+    }
+
+    ValueType at_or_default(uint index) const {
+        if (index >= length_) {
+            return ValueType();
+        }
+
+        return inner_[index];
+    }
+
+    ValueType at_or_default(uint index, const ValueType& default_value) const {
+        if (index >= length_) {
+            return default_value;
         }
 
         return inner_[index];

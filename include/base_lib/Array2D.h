@@ -2,7 +2,6 @@
 
 #include <assert.h>
 
-#include "BasicTypes.h"
 #include "String.h"
 
 template<typename T>
@@ -21,10 +20,10 @@ public:
         : size_x_(size_x)
         , size_y_(size_y)
     {
-        if (size() > 0)
+        if (get_size_total() > 0)
         {
-            data_ = new T[size()];
-            for (uint i = 0; i < size(); i++)
+            data_ = new T[get_size_total()];
+            for (uint i = 0; i < get_size_total(); i++)
             {
                 data_[i] = T();
             }
@@ -35,10 +34,10 @@ public:
         : size_x_(size_x)
         , size_y_(size_y)
     {
-        if (size() > 0)
+        if (get_size_total() > 0)
         {
-            data_ = new T[size()];
-            for (uint i = 0; i < size(); i++)
+            data_ = new T[get_size_total()];
+            for (uint i = 0; i < get_size_total(); i++)
             {
                 data_[i] = fill;
             }
@@ -51,8 +50,8 @@ public:
     {
         if (data.length() == size_x * size_y)
         {
-            data_ = new T[size()];
-            for (uint i = 0; i < size(); i++)
+            data_ = new T[get_size_total()];
+            for (uint i = 0; i < get_size_total(); i++)
             {
                 data_[i] = data[i];
             }
@@ -63,8 +62,8 @@ public:
         : size_x_(rhs.size_x_)
         , size_y_(rhs.size_y_)
     {
-        data_ = new T[size()];
-        for (uint i = 0; i < size(); i++)
+        data_ = new T[get_size_total()];
+        for (uint i = 0; i < get_size_total(); i++)
         {
             data_[i] = std::move(rhs.data_[i]);
         }
@@ -74,16 +73,16 @@ public:
     {
         if (this == &rhs) return *this;
         
-        if (size() != rhs.size())
+        if (get_size_total() != rhs.get_size_total())
         {
             size_x_ = rhs.size_x_;
             size_y_ = rhs.size_y_;
 
             delete[] data_;
-            data_ = new T[size()];
+            data_ = new T[get_size_total()];
         }
 
-        for (uint i = 0; i < size(); i++)
+        for (uint i = 0; i < get_size_total(); i++)
         {
             data_[i] = std::move(rhs.data_[i]);
         }
@@ -118,9 +117,7 @@ public:
 
     T& at(uint x, uint y)
     {
-        assert(x >= 0);
         assert(x < size_x_);
-        assert(y >= 0);
         assert(y < size_y_);
         
         return data_[y * size_x_ + x];
@@ -128,9 +125,7 @@ public:
 
     const T& at(uint x, uint y) const
     {
-        assert(x >= 0);
         assert(x < size_x_);
-        assert(y >= 0);
         assert(y < size_y_);
         
         return data_[y * size_x_ + x];
@@ -146,14 +141,14 @@ public:
         return size_y_;
     }
 
-    uint size() const
+    uint get_size_total() const
     {
         return size_x_ * size_y_;
     }
 
     List<T> to_list() const
     {
-        return size() > 0 ? List<T>(data_, size_x_ * size_y_) : List<T>();
+        return get_size_total() > 0 ? List<T>(data_, size_x_ * size_y_) : List<T>();
     }
 
 private:

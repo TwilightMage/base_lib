@@ -2,11 +2,13 @@
 
 #include <assert.h>
 
-#include "Compound.h"
-#include "IConvertible.h"
-#include "Quaternion.h"
 #include "Rect.h"
-#include "Vector3.h"
+
+namespace Compound {
+    class Object;
+    class Array;
+}
+class Quaternion;
 
 class EXPORT Matrix4x4 : public IData
 {

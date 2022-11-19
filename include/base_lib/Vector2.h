@@ -1,11 +1,12 @@
 ﻿#pragma once
 
-#include "Compound.h"
-#include "framework.h"
-#include "IConvertible.h"
 #include "String.h"
 
 class Vector3;
+
+namespace Compound {
+    class Array;
+}
 
 class EXPORT Vector2 : public IData
 {
@@ -44,8 +45,8 @@ public:
     bool operator==(const Vector2& rhs) const;
     bool operator!=(const Vector2& rhs) const;
 
-    void convert_to(Compound::Object& to) const;
-    void convert_from(const Compound::Object& from);
+    void convert_to(Compound::Array& to) const;
+    void convert_from(const Compound::Array& from);
     
     float x;
     float y;
